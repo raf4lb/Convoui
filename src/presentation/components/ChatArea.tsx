@@ -1,0 +1,150 @@
+import { Send, Paperclip, Smile, MoreVertical, User } from 'lucide-react';
+import { Input } from '../../components/ui/input';
+import { Button } from '../../components/ui/button';
+import { Avatar, AvatarFallback } from '../../components/ui/avatar';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '../../components/ui/dropdown-menu';
+import { useConversationMessages } from '../hooks/useConversationMessages';
+import { useConversations } from '../hooks/useConversations';
+
+interface ChatAreaProps {
+  conversationId: string | null;
+}
+
+export function ChatArea({ conversationId }: ChatAreaProps) {
+  const { messages, loading } = useConversationMessages(conversationId);
+  const { conversations } = useConversations();
+  
+  const currentConversation = conversations.find(c => c.id === conversationId);
+
+  if (!conversationId) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-neutral-50">
+        <div className="text-center text-neutral-400">
+          <MessageSquare className="w-16 h-16 mx-auto mb-4" />
+          <p>Selecione uma conversa para começar</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-white">
+        <p className="text-neutral-500">Carregando mensagens...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 flex flex-col bg-white">
+      {/* Chat Header */}
+      <div className="h-16 border-b border-neutral-200 px-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Avatar>
+            <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
+              {currentConversation?.name.charAt(0) || 'U'}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h3 className="text-neutral-900">{currentConversation?.name || 'Usuário'}</h3>
+            <p className="text-xs text-neutral-500">{currentConversation?.phone || ''}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-2">
+                <User className="w-4 h-4" />
+                Atribuir a: {currentConversation?.attendant || 'Nenhum'}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>João</DropdownMenuItem>
+              <DropdownMenuItem>Ana</DropdownMenuItem>
+              <DropdownMenuItem>Carlos</DropdownMenuItem>
+              <DropdownMenuItem>Não atribuído</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button variant="ghost" size="icon">
+            <MoreVertical className="w-5 h-5" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex ${message.sender === 'customer' ? 'justify-start' : 'justify-end'}`}
+          >
+            <div
+              className={`max-w-md px-4 py-2.5 rounded-2xl ${
+                message.sender === 'customer'
+                  ? 'bg-neutral-100 text-neutral-900'
+                  : 'bg-emerald-500 text-white'
+              }`}
+            >
+              {message.sender === 'attendant' && message.attendantName && (
+                <p className="text-xs opacity-80 mb-1">{message.attendantName}</p>
+              )}
+              <p className="text-sm">{message.text}</p>
+              <p className={`text-xs mt-1 ${
+                message.sender === 'customer' ? 'text-neutral-500' : 'text-emerald-100'
+              }`}>
+                {message.timestamp}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Input Area */}
+      <div className="border-t border-neutral-200 p-4">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="flex-shrink-0">
+            <Paperclip className="w-5 h-5" />
+          </Button>
+          
+          <Input
+            placeholder="Digite sua mensagem..."
+            className="flex-1 border-neutral-200"
+          />
+          
+          <Button variant="ghost" size="icon" className="flex-shrink-0">
+            <Smile className="w-5 h-5" />
+          </Button>
+          
+          <Button size="icon" className="flex-shrink-0 bg-emerald-500 hover:bg-emerald-600">
+            <Send className="w-5 h-5" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MessageSquare({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      strokeWidth="1.5"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+      />
+    </svg>
+  );
+}
