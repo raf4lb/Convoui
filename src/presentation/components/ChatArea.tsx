@@ -1,15 +1,24 @@
-import { Send, Paperclip, Smile, MoreVertical, User } from 'lucide-react';
+import { useState } from 'react';
+import { Send, Paperclip, Smile, MoreVertical, User, Check } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { Avatar, AvatarFallback } from '../../components/ui/avatar';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '../../components/ui/dropdown-menu';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from '../../components/ui/command';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../components/ui/popover';
 import { useConversationMessages } from '../hooks/useConversationMessages';
 import { useConversations } from '../hooks/useConversations';
+import { useUsers } from '../hooks/useUsers';
+import { UserRole } from '../../domain/entities/User';
 
 interface ChatAreaProps {
   conversationId: string | null;
@@ -17,9 +26,21 @@ interface ChatAreaProps {
 
 export function ChatArea({ conversationId }: ChatAreaProps) {
   const { messages, loading } = useConversationMessages(conversationId);
-  const { conversations } = useConversations();
+  const { conversations, assignAttendant } = useConversations();
+  const { users } = useUsers();
+  const [openAssignPopover, setOpenAssignPopover] = useState(false);
   
   const currentConversation = conversations.find(c => c.id === conversationId);
+  
+  // Filter only attendants
+  const attendants = users.filter(u => u.role === UserRole.ATTENDANT);
+
+  const handleAssignAttendant = async (userId: string | null, userName: string | null) => {
+    if (conversationId) {
+      await assignAttendant(conversationId, userId, userName);
+      setOpenAssignPopover(false);
+    }
+  };
 
   if (!conversationId) {
     return (
@@ -47,30 +68,66 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
         <div className="flex items-center gap-3">
           <Avatar>
             <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
-              {currentConversation?.name.charAt(0) || 'U'}
+              {currentConversation?.customerName.charAt(0) || 'U'}
             </AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="text-neutral-900">{currentConversation?.name || 'Usuário'}</h3>
-            <p className="text-xs text-neutral-500">{currentConversation?.phone || ''}</p>
+            <h3 className="text-neutral-900">{currentConversation?.customerName || 'Usuário'}</h3>
+            <p className="text-xs text-neutral-500">{currentConversation?.customerPhone || ''}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <Popover open={openAssignPopover} onOpenChange={setOpenAssignPopover}>
+            <PopoverTrigger asChild>
               <Button variant="ghost" size="sm" className="gap-2">
                 <User className="w-4 h-4" />
-                Atribuir a: {currentConversation?.attendant || 'Nenhum'}
+                {currentConversation?.assignedToUserName || 'Atribuir'}
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>João</DropdownMenuItem>
-              <DropdownMenuItem>Ana</DropdownMenuItem>
-              <DropdownMenuItem>Carlos</DropdownMenuItem>
-              <DropdownMenuItem>Não atribuído</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </PopoverTrigger>
+            <PopoverContent className="p-0" align="end">
+              <Command>
+                <CommandInput placeholder="Buscar atendente..." />
+                <CommandEmpty>Nenhum atendente encontrado.</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem
+                    onSelect={() => handleAssignAttendant(null, null)}
+                    className="cursor-pointer"
+                  >
+                    <Check
+                      className={`mr-2 h-4 w-4 ${
+                        !currentConversation?.assignedToUserId ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    />
+                    Não atribuído
+                  </CommandItem>
+                  {attendants.map((attendant) => (
+                    <CommandItem
+                      key={attendant.id}
+                      value={attendant.name}
+                      onSelect={() => handleAssignAttendant(attendant.id, attendant.name)}
+                      className="cursor-pointer"
+                    >
+                      <Check
+                        className={`mr-2 h-4 w-4 ${
+                          currentConversation?.assignedToUserId === attendant.id ? 'opacity-100' : 'opacity-0'
+                        }`}
+                      />
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs">
+                          {attendant.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                        </div>
+                        <div>
+                          <p className="text-sm">{attendant.name}</p>
+                          <p className="text-xs text-neutral-500">{attendant.email}</p>
+                        </div>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
 
           <Button variant="ghost" size="icon">
             <MoreVertical className="w-5 h-5" />

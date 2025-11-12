@@ -1,13 +1,29 @@
 import { useState } from 'react';
+import { AuthProvider, useAuth } from './presentation/contexts/AuthContext';
+import { Login } from './presentation/components/Login';
 import { Sidebar } from './presentation/components/Sidebar';
 import { ConversationList } from './presentation/components/ConversationList';
 import { ChatArea } from './presentation/components/ChatArea';
-import { AttendantPanel } from './presentation/components/AttendantPanel';
 import { Dashboard } from './presentation/components/Dashboard';
+import { UserManagement } from './presentation/components/UserManagement';
+import { CustomerManagement } from './presentation/components/CustomerManagement';
 
-export default function App() {
-  const [selectedView, setSelectedView] = useState<'conversations' | 'attendants' | 'dashboard'>('dashboard');
+function AppContent() {
+  const { session, loading } = useAuth();
+  const [selectedView, setSelectedView] = useState<'conversations' | 'customers' | 'dashboard' | 'users'>('dashboard');
   const [selectedConversation, setSelectedConversation] = useState<string | null>('1');
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-neutral-50">
+        <p className="text-neutral-500">Carregando...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <Login />;
+  }
 
   return (
     <div className="flex h-screen bg-neutral-50">
@@ -27,12 +43,22 @@ export default function App() {
             {/* Chat Area */}
             <ChatArea conversationId={selectedConversation} />
           </>
-        ) : selectedView === 'attendants' ? (
-          <AttendantPanel />
+        ) : selectedView === 'customers' ? (
+          <CustomerManagement />
+        ) : selectedView === 'users' ? (
+          <UserManagement />
         ) : (
           <Dashboard />
         )}
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
