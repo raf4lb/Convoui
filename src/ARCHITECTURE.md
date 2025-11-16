@@ -60,17 +60,20 @@ Este projeto segue os princípios do **Clean Architecture** (Arquitetura Limpa),
 **Responsabilidade**: Contém as regras de negócio e lógica da aplicação. Não depende de nada externo.
 
 #### Entities (Entidades)
+
 - Modelos de dados puros que representam conceitos do domínio
 - Exemplos: `Conversation`, `Message`, `Attendant`, `Metrics`
 - Sem dependências externas
 
 #### Use Cases (Casos de Uso)
+
 - Implementam a lógica de negócio da aplicação
 - Orquestram o fluxo de dados entre repositories e apresentação
 - Cada use case representa uma ação do usuário
 - Exemplos: `GetConversations`, `AssignConversationToAttendant`
 
 #### Repositories (Interfaces)
+
 - Definem contratos (interfaces) para acesso a dados
 - Não implementam lógica, apenas definem o que deve ser feito
 - Seguem o padrão Repository Pattern
@@ -88,6 +91,7 @@ Este projeto segue os princípios do **Clean Architecture** (Arquitetura Limpa),
 **Responsabilidade**: Configuração e setup de dependências.
 
 #### Dependency Injection Container
+
 - Centraliza a criação e configuração de todas as dependências
 - Instancia repositórios e use cases
 - Facilita testes e manutenção
@@ -98,11 +102,13 @@ Este projeto segue os princípios do **Clean Architecture** (Arquitetura Limpa),
 **Responsabilidade**: Interface do usuário e interação com o usuário.
 
 #### Components (Componentes)
+
 - Componentes React que renderizam a UI
 - Focados apenas em apresentação
 - Não contêm lógica de negócio
 
 #### Hooks (Custom Hooks)
+
 - Conectam os componentes UI com os use cases
 - Gerenciam estado local da UI
 - Fazem a ponte entre a camada de apresentação e domínio
@@ -128,49 +134,59 @@ Data Source (Mock/API)
 ## Princípios Aplicados
 
 ### 1. Dependency Rule (Regra de Dependência)
+
 - As dependências sempre apontam para dentro
 - Domain não depende de nada
 - Data depende de Domain
 - Presentation depende de Domain (através dos hooks)
 
 ### 2. Separation of Concerns (Separação de Responsabilidades)
+
 - Cada camada tem uma responsabilidade bem definida
 - Facilita manutenção e evolução do código
 
 ### 3. Dependency Inversion Principle (DIP)
+
 - Use cases dependem de interfaces (abstrações), não de implementações
 - Fácil substituir implementações sem afetar a lógica de negócio
 
 ### 4. Single Responsibility Principle (SRP)
+
 - Cada classe/módulo tem uma única responsabilidade
 - Use cases são pequenos e focados
 
 ## Vantagens desta Arquitetura
 
 ### ✅ Testabilidade
+
 - Fácil testar cada camada isoladamente
 - Use cases podem ser testados sem UI
 - Repositórios podem ser mockados
 
 ### ✅ Independência de Framework
+
 - Lógica de negócio não depende de React, API, ou banco de dados
 - Fácil migrar para outra tecnologia de UI
 
 ### ✅ Manutenibilidade
+
 - Código organizado e fácil de entender
 - Mudanças em uma camada não afetam outras
 
 ### ✅ Escalabilidade
+
 - Fácil adicionar novos casos de uso
 - Fácil trocar implementações de repositórios
 
 ### ✅ Flexibilidade
+
 - Dados mock podem ser facilmente substituídos por APIs reais
 - Múltiplas implementações do mesmo repositório (cache, API, local storage)
 
 ## Como Adicionar Novas Funcionalidades
 
 ### 1. Nova Entidade
+
 ```typescript
 // domain/entities/NewEntity.ts
 export interface NewEntity {
@@ -180,6 +196,7 @@ export interface NewEntity {
 ```
 
 ### 2. Novo Repositório
+
 ```typescript
 // domain/repositories/INewRepository.ts
 export interface INewRepository {
@@ -195,11 +212,12 @@ export class NewRepository implements INewRepository {
 ```
 
 ### 3. Novo Use Case
+
 ```typescript
 // domain/use-cases/GetNewEntities.ts
 export class GetNewEntities {
   constructor(private repository: INewRepository) {}
-  
+
   async execute(): Promise<NewEntity[]> {
     return await this.repository.getAll();
   }
@@ -207,6 +225,7 @@ export class GetNewEntities {
 ```
 
 ### 4. Registrar no Container DI
+
 ```typescript
 // infrastructure/di/container.ts
 const newRepository = new NewRepository();
@@ -214,11 +233,12 @@ export const getNewEntitiesUseCase = new GetNewEntities(newRepository);
 ```
 
 ### 5. Criar Hook
+
 ```typescript
 // presentation/hooks/useNewEntities.ts
 export function useNewEntities() {
   const [entities, setEntities] = useState<NewEntity[]>([]);
-  
+
   useEffect(() => {
     const loadEntities = async () => {
       const data = await getNewEntitiesUseCase.execute();
@@ -226,17 +246,18 @@ export function useNewEntities() {
     };
     loadEntities();
   }, []);
-  
+
   return { entities };
 }
 ```
 
 ### 6. Usar no Componente
+
 ```typescript
 // presentation/components/NewComponent.tsx
 export function NewComponent() {
   const { entities } = useNewEntities();
-  
+
   return (
     <div>
       {entities.map(entity => (
@@ -252,11 +273,12 @@ export function NewComponent() {
 Para conectar a uma API real do WhatsApp:
 
 1. Criar nova implementação do repositório:
+
 ```typescript
 // data/repositories/WhatsAppConversationRepository.ts
 export class WhatsAppConversationRepository implements IConversationRepository {
   async getAll(): Promise<Conversation[]> {
-    const response = await fetch('/api/conversations');
+    const response = await fetch("/api/conversations");
     return response.json();
   }
   // ... outros métodos
@@ -264,6 +286,7 @@ export class WhatsAppConversationRepository implements IConversationRepository {
 ```
 
 2. Atualizar o container DI:
+
 ```typescript
 // infrastructure/di/container.ts
 const conversationRepository = new WhatsAppConversationRepository();
@@ -275,6 +298,7 @@ const conversationRepository = new WhatsAppConversationRepository();
 ## Conclusão
 
 Esta arquitetura garante que o projeto seja:
+
 - **Limpo**: Código organizado e fácil de entender
 - **Testável**: Fácil escrever testes unitários e de integração
 - **Flexível**: Fácil adicionar ou modificar funcionalidades

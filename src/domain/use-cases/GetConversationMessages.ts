@@ -1,5 +1,5 @@
-import { IConversationRepository } from '../repositories/IConversationRepository';
-import { Message } from '../entities/Message';
+import { Message } from "../entities/Message";
+import { IConversationRepository } from "../repositories/IConversationRepository";
 
 export class GetConversationMessages {
   constructor(private conversationRepository: IConversationRepository) {}

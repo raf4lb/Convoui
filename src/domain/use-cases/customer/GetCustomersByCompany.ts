@@ -1,5 +1,5 @@
-import { ICustomerRepository } from '../../repositories/ICustomerRepository';
-import { Customer } from '../../entities/Customer';
+import { Customer } from "../../entities/Customer";
+import { ICustomerRepository } from "../../repositories/ICustomerRepository";
 
 export class GetCustomersByCompany {
   constructor(private customerRepository: ICustomerRepository) {}

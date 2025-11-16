@@ -1,5 +1,5 @@
-import { ICustomerRepository } from '../../repositories/ICustomerRepository';
-import { Customer } from '../../entities/Customer';
+import { Customer } from "../../entities/Customer";
+import { ICustomerRepository } from "../../repositories/ICustomerRepository";
 
 export class CreateCustomer {
   constructor(private customerRepository: ICustomerRepository) {}
@@ -14,17 +14,17 @@ export class CreateCustomer {
   }): Promise<Customer> {
     // Validate data
     if (!data.name || data.name.trim().length < 2) {
-      throw new Error('Nome deve ter no mínimo 2 caracteres');
+      throw new Error("Nome deve ter no mínimo 2 caracteres");
     }
 
     if (!data.phone || data.phone.trim().length < 10) {
-      throw new Error('Telefone inválido');
+      throw new Error("Telefone inválido");
     }
 
     // Check if phone already exists for this company
     const existingCustomer = await this.customerRepository.getByPhone(data.phone, data.companyId);
     if (existingCustomer) {
-      throw new Error('Cliente com este telefone já cadastrado');
+      throw new Error("Cliente com este telefone já cadastrado");
     }
 
     // Create customer

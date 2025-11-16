@@ -1,5 +1,5 @@
-import { IConversationRepository } from '../../repositories/IConversationRepository';
-import { Conversation } from '../../entities/Conversation';
+import { Conversation } from "../../entities/Conversation";
+import { IConversationRepository } from "../../repositories/IConversationRepository";
 
 export class SearchConversations {
   constructor(private conversationRepository: IConversationRepository) {}
@@ -8,7 +8,7 @@ export class SearchConversations {
     if (!query || query.trim().length === 0) {
       return await this.conversationRepository.getAll(companyId);
     }
-    
+
     return await this.conversationRepository.search(companyId, query.trim());
   }
 }

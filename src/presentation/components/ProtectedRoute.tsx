@@ -1,8 +1,10 @@
-import { ReactNode } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { Permission } from '../../domain/entities/Permission';
-import { Alert, AlertDescription } from '../../components/ui/alert';
-import { ShieldAlert } from 'lucide-react';
+import { ReactNode } from "react";
+
+import { ShieldAlert } from "lucide-react";
+
+import { Alert, AlertDescription } from "../../components/ui/alert";
+import { Permission } from "../../domain/entities/Permission";
+import { useAuth } from "../contexts/AuthContext";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -11,11 +13,11 @@ interface ProtectedRouteProps {
   fallback?: ReactNode;
 }
 
-export function ProtectedRoute({ 
-  children, 
+export function ProtectedRoute({
+  children,
   requiredPermission,
   requiredPermissions,
-  fallback 
+  fallback,
 }: ProtectedRouteProps) {
   const { hasPermission, hasAnyPermission } = useAuth();
 

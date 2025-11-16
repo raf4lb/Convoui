@@ -1,4 +1,4 @@
-import { IAuthRepository } from '../../repositories/IAuthRepository';
+import { IAuthRepository } from "../../repositories/IAuthRepository";
 
 export class Logout {
   constructor(private authRepository: IAuthRepository) {}

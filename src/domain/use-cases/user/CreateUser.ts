@@ -1,6 +1,6 @@
-import { IUserRepository } from '../../repositories/IUserRepository';
-import { User, UserRole, UserWithoutPassword } from '../../entities/User';
-import { Permission, RolePermissions } from '../../entities/Permission';
+import { Permission, RolePermissions } from "../../entities/Permission";
+import { User, UserRole, UserWithoutPassword } from "../../entities/User";
+import { IUserRepository } from "../../repositories/IUserRepository";
 
 export class CreateUser {
   constructor(private userRepository: IUserRepository) {}
@@ -13,28 +13,28 @@ export class CreateUser {
       password: string;
       role: UserRole;
     },
-    creatorRole: UserRole
+    creatorRole: UserRole,
   ): Promise<UserWithoutPassword> {
     // Validate permissions
     this.validatePermissions(data.role, creatorRole);
 
     // Validate data
     if (!data.name || data.name.trim().length < 3) {
-      throw new Error('Nome deve ter no mínimo 3 caracteres');
+      throw new Error("Nome deve ter no mínimo 3 caracteres");
     }
 
-    if (!data.email || !data.email.includes('@')) {
-      throw new Error('Email inválido');
+    if (!data.email || !data.email.includes("@")) {
+      throw new Error("Email inválido");
     }
 
     if (!data.password || data.password.length < 6) {
-      throw new Error('Senha deve ter no mínimo 6 caracteres');
+      throw new Error("Senha deve ter no mínimo 6 caracteres");
     }
 
     // Check if email already exists
     const existingUser = await this.userRepository.getByEmail(data.email);
     if (existingUser) {
-      throw new Error('Email já cadastrado');
+      throw new Error("Email já cadastrado");
     }
 
     // Create user
@@ -53,16 +53,19 @@ export class CreateUser {
   private validatePermissions(targetRole: UserRole, creatorRole: UserRole): void {
     const permissions = RolePermissions[creatorRole];
 
-    if (targetRole === UserRole.ADMINISTRATOR && !permissions.includes(Permission.CREATE_ADMINISTRATOR)) {
-      throw new Error('Sem permissão para criar administradores');
+    if (
+      targetRole === UserRole.ADMINISTRATOR &&
+      !permissions.includes(Permission.CREATE_ADMINISTRATOR)
+    ) {
+      throw new Error("Sem permissão para criar administradores");
     }
 
     if (targetRole === UserRole.MANAGER && !permissions.includes(Permission.CREATE_MANAGER)) {
-      throw new Error('Sem permissão para criar gerentes');
+      throw new Error("Sem permissão para criar gerentes");
     }
 
     if (targetRole === UserRole.ATTENDANT && !permissions.includes(Permission.CREATE_ATTENDANT)) {
-      throw new Error('Sem permissão para criar atendentes');
+      throw new Error("Sem permissão para criar atendentes");
     }
   }
 }

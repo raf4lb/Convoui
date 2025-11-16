@@ -1,5 +1,5 @@
-import { IAuthRepository } from '../../repositories/IAuthRepository';
-import { AuthSession } from '../../entities/AuthSession';
+import { AuthSession } from "../../entities/AuthSession";
+import { IAuthRepository } from "../../repositories/IAuthRepository";
 
 export class ValidateSession {
   constructor(private authRepository: IAuthRepository) {}

@@ -1,5 +1,5 @@
-import { UserWithoutPassword } from './User';
-import { Company } from './Company';
+import { Company } from "./Company";
+import { UserWithoutPassword } from "./User";
 
 export interface AuthSession {
   user: UserWithoutPassword;

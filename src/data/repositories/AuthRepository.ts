@@ -1,7 +1,7 @@
-import { IAuthRepository } from '../../domain/repositories/IAuthRepository';
-import { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { ICompanyRepository } from '../../domain/repositories/ICompanyRepository';
-import { AuthSession } from '../../domain/entities/AuthSession';
+import { AuthSession } from "../../domain/entities/AuthSession";
+import { IAuthRepository } from "../../domain/repositories/IAuthRepository";
+import { ICompanyRepository } from "../../domain/repositories/ICompanyRepository";
+import { IUserRepository } from "../../domain/repositories/IUserRepository";
 
 // Simple in-memory session storage
 const sessions = new Map<string, AuthSession>();
@@ -9,13 +9,13 @@ const sessions = new Map<string, AuthSession>();
 export class AuthRepository implements IAuthRepository {
   constructor(
     private userRepository: IUserRepository,
-    private companyRepository: ICompanyRepository
+    private companyRepository: ICompanyRepository,
   ) {}
 
   async authenticate(email: string, password: string): Promise<AuthSession | null> {
     // Find user by email
     const user = await this.userRepository.getByEmail(email);
-    
+
     if (!user) {
       return null;
     }
@@ -27,7 +27,7 @@ export class AuthRepository implements IAuthRepository {
 
     // Get company
     const company = await this.companyRepository.getById(user.companyId);
-    
+
     if (!company) {
       return null;
     }
@@ -57,7 +57,7 @@ export class AuthRepository implements IAuthRepository {
 
   async validateToken(token: string): Promise<AuthSession | null> {
     const session = sessions.get(token);
-    
+
     if (!session) {
       return null;
     }

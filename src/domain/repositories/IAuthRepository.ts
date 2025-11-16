@@ -1,4 +1,4 @@
-import { AuthSession } from '../entities/AuthSession';
+import { AuthSession } from "../entities/AuthSession";
 
 export interface IAuthRepository {
   authenticate(email: string, password: string): Promise<AuthSession | null>;

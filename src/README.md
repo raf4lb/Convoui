@@ -5,6 +5,7 @@ Sistema multi-tenant de atendimento ao cliente via WhatsApp com gestão de usuá
 ## 🚀 Funcionalidades
 
 ### Autenticação e Autorização
+
 - ✅ Sistema multi-tenant (múltiplas empresas)
 - ✅ 3 tipos de usuários com permissões distintas
 - ✅ Login seguro com validação de sessão
@@ -12,6 +13,7 @@ Sistema multi-tenant de atendimento ao cliente via WhatsApp com gestão de usuá
 - ✅ Isolamento completo de dados por empresa
 
 ### Gestão de Conversas
+
 - ✅ Lista de conversas em tempo real
 - ✅ Chat completo com mensagens
 - ✅ Atribuição de conversas a atendentes
@@ -20,12 +22,14 @@ Sistema multi-tenant de atendimento ao cliente via WhatsApp com gestão de usuá
 - ✅ Busca de conversas
 
 ### Gestão de Atendentes
+
 - ✅ Visualização de atendentes
 - ✅ Status online/away/offline
 - ✅ Métricas por atendente
 - ✅ Conversas ativas e totais
 
 ### Gestão de Usuários
+
 - ✅ Criação de usuários com validação de permissões
 - ✅ Administradores podem criar qualquer tipo de usuário
 - ✅ Gerentes podem criar apenas atendentes
@@ -33,6 +37,7 @@ Sistema multi-tenant de atendimento ao cliente via WhatsApp com gestão de usuá
 - ✅ Visualização de todos os usuários da empresa
 
 ### Dashboard e Métricas
+
 - ✅ KPIs principais (conversas, tempo de resposta, satisfação)
 - ✅ Gráficos de conversas por dia
 - ✅ Distribuição de status
@@ -56,18 +61,21 @@ Veja [ARCHITECTURE.md](./ARCHITECTURE.md) para detalhes completos.
 ## 👥 Tipos de Usuários
 
 ### 1. ADMINISTRATOR (Administrador)
+
 - ✅ Acesso total ao sistema
 - ✅ Gerencia todos os usuários
 - ✅ Visualiza todas as conversas e métricas
 - ✅ Configura a empresa
 
 ### 2. MANAGER (Gerente)
+
 - ✅ Cria e gerencia atendentes
 - ✅ Visualiza todas as conversas
 - ✅ Atribui conversas
 - ✅ Acessa métricas da equipe
 
 ### 3. ATTENDANT (Atendente)
+
 - ✅ Visualiza conversas atribuídas
 - ✅ Responde mensagens
 - ✅ Visualiza próprias métricas
@@ -79,18 +87,21 @@ Veja [AUTHENTICATION.md](./AUTHENTICATION.md) para detalhes sobre permissões.
 ### Empresa: Tech Solutions Ltda
 
 **Administrador:**
+
 ```
 Email: admin@techsolutions.com
 Senha: 123456
 ```
 
 **Gerente:**
+
 ```
 Email: carlos@techsolutions.com
 Senha: 123456
 ```
 
 **Atendente:**
+
 ```
 Email: joao@techsolutions.com
 Senha: 123456
@@ -99,6 +110,7 @@ Senha: 123456
 ### Empresa: Comércio Digital SA
 
 **Administrador:**
+
 ```
 Email: admin@comerciodigital.com
 Senha: 123456
@@ -184,6 +196,7 @@ Senha: 123456
 ## 🔒 Segurança
 
 ### Implementado
+
 - ✅ Autenticação baseada em token
 - ✅ Validação de sessão
 - ✅ Isolamento de dados por empresa
@@ -191,6 +204,7 @@ Senha: 123456
 - ✅ Validação em use cases
 
 ### Para Produção
+
 - [ ] Hash de senhas (bcrypt/argon2)
 - [ ] Refresh tokens
 - [ ] Rate limiting
@@ -208,6 +222,7 @@ Senha: 123456
 ## 📊 Métricas e KPIs
 
 O dashboard apresenta:
+
 - Total de conversas (com tendência)
 - Tempo médio de resposta
 - Taxa de satisfação
@@ -254,12 +269,14 @@ const mockUseAuth = () => ({ session: mockSession, ... });
 ## 📝 Como Usar
 
 ### Login
+
 1. Acesse o sistema
 2. Digite email e senha
 3. Sistema valida e cria sessão
 4. Redirecionado para dashboard
 
 ### Criar Usuário
+
 1. Menu lateral > Usuários
 2. Clique em "Novo Usuário"
 3. Preencha dados
@@ -267,6 +284,7 @@ const mockUseAuth = () => ({ session: mockSession, ... });
 5. Clique em "Criar Usuário"
 
 ### Gerenciar Conversas
+
 1. Menu lateral > Conversas
 2. Selecione uma conversa
 3. Visualize histórico
@@ -274,6 +292,7 @@ const mockUseAuth = () => ({ session: mockSession, ... });
 5. Responda mensagens
 
 ### Visualizar Métricas
+
 1. Menu lateral > Dashboard
 2. Visualize KPIs
 3. Analise gráficos
@@ -282,6 +301,7 @@ const mockUseAuth = () => ({ session: mockSession, ... });
 ## 🚀 Próximos Passos
 
 ### Curto Prazo
+
 - [ ] Implementar filtros de conversas
 - [ ] Adicionar busca em tempo real
 - [ ] Notificações de novas mensagens
@@ -289,6 +309,7 @@ const mockUseAuth = () => ({ session: mockSession, ... });
 - [ ] Desativação de usuários
 
 ### Médio Prazo
+
 - [ ] Integração real com API do WhatsApp
 - [ ] WebSocket para mensagens em tempo real
 - [ ] Upload de arquivos e mídia
@@ -296,6 +317,7 @@ const mockUseAuth = () => ({ session: mockSession, ... });
 - [ ] Respostas rápidas
 
 ### Longo Prazo
+
 - [ ] Chatbot com IA
 - [ ] Análise de sentimentos
 - [ ] Relatórios avançados

@@ -1,7 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Customer } from '../../domain/entities/Customer';
-import { getCustomersByCompanyUseCase, searchCustomersUseCase, createCustomerUseCase } from '../../infrastructure/di/container';
-import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect } from "react";
+
+import { Customer } from "../../domain/entities/Customer";
+import {
+  getCustomersByCompanyUseCase,
+  searchCustomersUseCase,
+  createCustomerUseCase,
+} from "../../infrastructure/di/container";
+import { useAuth } from "../contexts/AuthContext";
 
 export function useCustomers() {
   const { session } = useAuth();
@@ -52,7 +57,7 @@ export function useCustomers() {
     tags?: string[];
     notes?: string;
   }) => {
-    if (!session) throw new Error('No session');
+    if (!session) throw new Error("No session");
 
     const newCustomer = await createCustomerUseCase.execute({
       companyId: session.company.id,

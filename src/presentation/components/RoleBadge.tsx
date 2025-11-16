@@ -1,6 +1,7 @@
-import { UserRole } from '../../domain/entities/User';
-import { Badge } from '../../components/ui/badge';
-import { Shield, UserCog, User } from 'lucide-react';
+import { Shield, UserCog, User } from "lucide-react";
+
+import { Badge } from "../../components/ui/badge";
+import { UserRole } from "../../domain/entities/User";
 
 interface RoleBadgeProps {
   role: UserRole;
@@ -10,19 +11,19 @@ interface RoleBadgeProps {
 export function RoleBadge({ role, showIcon = true }: RoleBadgeProps) {
   const config = {
     [UserRole.ADMINISTRATOR]: {
-      label: 'Administrador',
+      label: "Administrador",
       icon: Shield,
-      className: 'bg-purple-50 text-purple-700 border-purple-200',
+      className: "bg-purple-50 text-purple-700 border-purple-200",
     },
     [UserRole.MANAGER]: {
-      label: 'Gerente',
+      label: "Gerente",
       icon: UserCog,
-      className: 'bg-blue-50 text-blue-700 border-blue-200',
+      className: "bg-blue-50 text-blue-700 border-blue-200",
     },
     [UserRole.ATTENDANT]: {
-      label: 'Atendente',
+      label: "Atendente",
       icon: User,
-      className: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      className: "bg-emerald-50 text-emerald-700 border-emerald-200",
     },
   };
 

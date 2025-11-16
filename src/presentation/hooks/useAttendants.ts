@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Attendant } from '../../domain/entities/Attendant';
-import { getAttendantsUseCase } from '../../infrastructure/di/container';
+import { useState, useEffect } from "react";
+
+import { Attendant } from "../../domain/entities/Attendant";
+import { getAttendantsUseCase } from "../../infrastructure/di/container";
 
 export function useAttendants() {
   const [attendants, setAttendants] = useState<Attendant[]>([]);

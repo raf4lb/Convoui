@@ -1,7 +1,7 @@
 export enum UserRole {
-  ADMINISTRATOR = 'ADMINISTRATOR',
-  MANAGER = 'MANAGER',
-  ATTENDANT = 'ATTENDANT',
+  ADMINISTRATOR = "ADMINISTRATOR",
+  MANAGER = "MANAGER",
+  ATTENDANT = "ATTENDANT",
 }
 
 export interface User {
@@ -16,4 +16,4 @@ export interface User {
   lastLoginAt?: Date;
 }
 
-export type UserWithoutPassword = Omit<User, 'password'>;
+export type UserWithoutPassword = Omit<User, "password">;

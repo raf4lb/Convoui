@@ -1,39 +1,42 @@
-import { useState } from 'react';
-import { Send, Paperclip, Smile, MoreVertical, User, Check } from 'lucide-react';
-import { Input } from '../../components/ui/input';
-import { Button } from '../../components/ui/button';
-import { Avatar, AvatarFallback } from '../../components/ui/avatar';
+import { useState } from "react";
+
+import { Check, MoreVertical, Paperclip, Send, Smile, User } from "lucide-react";
+
+import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+import { Button } from "../../components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '../../components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '../../components/ui/popover';
-import { useConversationMessages } from '../hooks/useConversationMessages';
-import { useConversations } from '../hooks/useConversations';
-import { useUsers } from '../hooks/useUsers';
-import { UserRole } from '../../domain/entities/User';
+} from "../../components/ui/command";
+import { Input } from "../../components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
+import { Permission } from "../../domain/entities/Permission";
+import { UserRole } from "../../domain/entities/User";
+import { useAuth } from "../contexts/AuthContext";
+import { useConversationMessages } from "../hooks/useConversationMessages";
+import { useConversations } from "../hooks/useConversations";
+import { useUsers } from "../hooks/useUsers";
 
 interface ChatAreaProps {
   conversationId: string | null;
 }
 
 export function ChatArea({ conversationId }: ChatAreaProps) {
+  const { hasPermission } = useAuth();
   const { messages, loading } = useConversationMessages(conversationId);
   const { conversations, assignAttendant } = useConversations();
   const { users } = useUsers();
   const [openAssignPopover, setOpenAssignPopover] = useState(false);
-  
-  const currentConversation = conversations.find(c => c.id === conversationId);
-  
+
+  const currentConversation = conversations.find((c) => c.id === conversationId);
+
+  const canAssingConversation = hasPermission(Permission.ASSIGN_CONVERSATION);
+
   // Filter only attendants
-  const attendants = users.filter(u => u.role === UserRole.ATTENDANT);
+  const attendants = users.filter((u) => u.role === UserRole.ATTENDANT);
 
   const handleAssignAttendant = async (userId: string | null, userName: string | null) => {
     if (conversationId) {
@@ -68,67 +71,74 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
         <div className="flex items-center gap-3">
           <Avatar>
             <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
-              {currentConversation?.customerName.charAt(0) || 'U'}
+              {currentConversation?.customerName.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="text-neutral-900">{currentConversation?.customerName || 'Usuário'}</h3>
-            <p className="text-xs text-neutral-500">{currentConversation?.customerPhone || ''}</p>
+            <h3 className="text-neutral-900">{currentConversation?.customerName || "Usuário"}</h3>
+            <p className="text-xs text-neutral-500">{currentConversation?.customerPhone || ""}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <Popover open={openAssignPopover} onOpenChange={setOpenAssignPopover}>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <User className="w-4 h-4" />
-                {currentConversation?.assignedToUserName || 'Atribuir'}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="p-0" align="end">
-              <Command>
-                <CommandInput placeholder="Buscar atendente..." />
-                <CommandEmpty>Nenhum atendente encontrado.</CommandEmpty>
-                <CommandGroup>
-                  <CommandItem
-                    onSelect={() => handleAssignAttendant(null, null)}
-                    className="cursor-pointer"
-                  >
-                    <Check
-                      className={`mr-2 h-4 w-4 ${
-                        !currentConversation?.assignedToUserId ? 'opacity-100' : 'opacity-0'
-                      }`}
-                    />
-                    Não atribuído
-                  </CommandItem>
-                  {attendants.map((attendant) => (
+          {canAssingConversation && (
+            <Popover open={openAssignPopover} onOpenChange={setOpenAssignPopover}>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <User className="w-4 h-4" />
+                  {currentConversation?.assignedToUserName || "Atribuir"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-0" align="end">
+                <Command>
+                  <CommandInput placeholder="Buscar atendente..." />
+                  <CommandEmpty>Nenhum atendente encontrado.</CommandEmpty>
+                  <CommandGroup>
                     <CommandItem
-                      key={attendant.id}
-                      value={attendant.name}
-                      onSelect={() => handleAssignAttendant(attendant.id, attendant.name)}
+                      onSelect={() => handleAssignAttendant(null, null)}
                       className="cursor-pointer"
                     >
                       <Check
                         className={`mr-2 h-4 w-4 ${
-                          currentConversation?.assignedToUserId === attendant.id ? 'opacity-100' : 'opacity-0'
+                          !currentConversation?.assignedToUserId ? "opacity-100" : "opacity-0"
                         }`}
                       />
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs">
-                          {attendant.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
-                        </div>
-                        <div>
-                          <p className="text-sm">{attendant.name}</p>
-                          <p className="text-xs text-neutral-500">{attendant.email}</p>
-                        </div>
-                      </div>
+                      Não atribuído
                     </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-
+                    {attendants.map((attendant) => (
+                      <CommandItem
+                        key={attendant.id}
+                        value={attendant.name}
+                        onSelect={() => handleAssignAttendant(attendant.id, attendant.name)}
+                        className="cursor-pointer"
+                      >
+                        <Check
+                          className={`mr-2 h-4 w-4 ${
+                            currentConversation?.assignedToUserId === attendant.id
+                              ? "opacity-100"
+                              : "opacity-0"
+                          }`}
+                        />
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs">
+                            {attendant.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .substring(0, 2)}
+                          </div>
+                          <div>
+                            <p className="text-sm">{attendant.name}</p>
+                            <p className="text-xs text-neutral-500">{attendant.email}</p>
+                          </div>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          )}
           <Button variant="ghost" size="icon">
             <MoreVertical className="w-5 h-5" />
           </Button>
@@ -140,22 +150,24 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.sender === 'customer' ? 'justify-start' : 'justify-end'}`}
+            className={`flex ${message.sender === "customer" ? "justify-start" : "justify-end"}`}
           >
             <div
               className={`max-w-md px-4 py-2.5 rounded-2xl ${
-                message.sender === 'customer'
-                  ? 'bg-neutral-100 text-neutral-900'
-                  : 'bg-emerald-500 text-white'
+                message.sender === "customer"
+                  ? "bg-neutral-100 text-neutral-900"
+                  : "bg-emerald-500 text-white"
               }`}
             >
-              {message.sender === 'attendant' && message.attendantName && (
+              {message.sender === "attendant" && message.attendantName && (
                 <p className="text-xs opacity-80 mb-1">{message.attendantName}</p>
               )}
               <p className="text-sm">{message.text}</p>
-              <p className={`text-xs mt-1 ${
-                message.sender === 'customer' ? 'text-neutral-500' : 'text-emerald-100'
-              }`}>
+              <p
+                className={`text-xs mt-1 ${
+                  message.sender === "customer" ? "text-neutral-500" : "text-emerald-100"
+                }`}
+              >
                 {message.timestamp}
               </p>
             </div>
@@ -169,16 +181,13 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
           <Button variant="ghost" size="icon" className="flex-shrink-0">
             <Paperclip className="w-5 h-5" />
           </Button>
-          
-          <Input
-            placeholder="Digite sua mensagem..."
-            className="flex-1 border-neutral-200"
-          />
-          
+
+          <Input placeholder="Digite sua mensagem..." className="flex-1 border-neutral-200" />
+
           <Button variant="ghost" size="icon" className="flex-shrink-0">
             <Smile className="w-5 h-5" />
           </Button>
-          
+
           <Button size="icon" className="flex-shrink-0 bg-emerald-500 hover:bg-emerald-600">
             <Send className="w-5 h-5" />
           </Button>

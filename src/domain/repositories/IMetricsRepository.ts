@@ -1,11 +1,11 @@
-import { 
-  DashboardMetrics, 
-  ConversationByDay, 
+import {
+  DashboardMetrics,
+  ConversationByDay,
   AttendantPerformance,
   HourlyData,
   StatusData,
-  AttendantDetailedPerformance
-} from '../entities/Metrics';
+  AttendantDetailedPerformance,
+} from "../entities/Metrics";
 
 export interface IMetricsRepository {
   getDashboardMetrics(): Promise<DashboardMetrics>;

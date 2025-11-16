@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
-import { UserWithoutPassword, UserRole } from '../../domain/entities/User';
-import { 
-  getUsersByCompanyUseCase, 
+import { useState, useEffect } from "react";
+
+import { UserWithoutPassword, UserRole } from "../../domain/entities/User";
+import {
+  getUsersByCompanyUseCase,
   createUserUseCase,
   updateUserUseCase,
   deleteUserUseCase,
-  searchUsersUseCase
-} from '../../infrastructure/di/container';
-import { useAuth } from '../contexts/AuthContext';
+  searchUsersUseCase,
+} from "../../infrastructure/di/container";
+import { useAuth } from "../contexts/AuthContext";
 
 export function useUsers() {
   const { session } = useAuth();
@@ -26,10 +27,7 @@ export function useUsers() {
 
     try {
       setLoading(true);
-      const data = await getUsersByCompanyUseCase.execute(
-        session.company.id,
-        session.user.role
-      );
+      const data = await getUsersByCompanyUseCase.execute(session.company.id, session.user.role);
       setUsers(data);
       setError(null);
     } catch (err) {
@@ -44,11 +42,7 @@ export function useUsers() {
 
     try {
       setLoading(true);
-      const data = await searchUsersUseCase.execute(
-        session.company.id,
-        query,
-        roleFilter
-      );
+      const data = await searchUsersUseCase.execute(session.company.id, query, roleFilter);
       setUsers(data);
       setError(null);
     } catch (err) {
@@ -64,14 +58,14 @@ export function useUsers() {
     password: string;
     role: UserRole;
   }) => {
-    if (!session) throw new Error('No session');
+    if (!session) throw new Error("No session");
 
     const newUser = await createUserUseCase.execute(
       {
         companyId: session.company.id,
         ...data,
       },
-      session.user.role
+      session.user.role,
     );
 
     setUsers([...users, newUser]);
@@ -79,33 +73,29 @@ export function useUsers() {
   };
 
   const updateUser = async (userId: string, updates: Partial<UserWithoutPassword>) => {
-    if (!session) throw new Error('No session');
+    if (!session) throw new Error("No session");
 
-    const updatedUser = await updateUserUseCase.execute(
-      userId,
-      updates,
-      session.user.role
-    );
+    const updatedUser = await updateUserUseCase.execute(userId, updates, session.user.role);
 
-    setUsers(users.map(u => u.id === userId ? updatedUser : u));
+    setUsers(users.map((u) => (u.id === userId ? updatedUser : u)));
     return updatedUser;
   };
 
   const deleteUser = async (userId: string) => {
-    if (!session) throw new Error('No session');
+    if (!session) throw new Error("No session");
 
     await deleteUserUseCase.execute(userId, session.user.role);
-    setUsers(users.filter(u => u.id !== userId));
+    setUsers(users.filter((u) => u.id !== userId));
   };
 
-  return { 
-    users, 
-    loading, 
-    error, 
-    reload: loadUsers, 
+  return {
+    users,
+    loading,
+    error,
+    reload: loadUsers,
     search,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
   };
 }

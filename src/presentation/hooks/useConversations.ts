@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Conversation } from '../../domain/entities/Conversation';
-import { 
-  getConversationsUseCase, 
+import { useState, useEffect } from "react";
+
+import { Conversation } from "../../domain/entities/Conversation";
+import {
+  getConversationsUseCase,
   searchConversationsUseCase,
   getUnassignedConversationsUseCase,
-  assignConversationToAttendantUseCase
-} from '../../infrastructure/di/container';
-import { useAuth } from '../contexts/AuthContext';
+  assignConversationToAttendantUseCase,
+} from "../../infrastructure/di/container";
+import { useAuth } from "../contexts/AuthContext";
 
 export function useConversations() {
   const { session } = useAuth();
@@ -65,24 +66,30 @@ export function useConversations() {
     }
   };
 
-  const assignAttendant = async (conversationId: string, userId: string | null, userName: string | null) => {
+  const assignAttendant = async (
+    conversationId: string,
+    userId: string | null,
+    userName: string | null,
+  ) => {
     await assignConversationToAttendantUseCase.execute(conversationId, userId, userName);
-    
+
     // Update local state
-    setConversations(conversations.map(conv => 
-      conv.id === conversationId 
-        ? { ...conv, assignedToUserId: userId, assignedToUserName: userName }
-        : conv
-    ));
+    setConversations(
+      conversations.map((conv) =>
+        conv.id === conversationId
+          ? { ...conv, assignedToUserId: userId, assignedToUserName: userName }
+          : conv,
+      ),
+    );
   };
 
-  return { 
-    conversations, 
-    loading, 
-    error, 
-    reload: loadConversations, 
+  return {
+    conversations,
+    loading,
+    error,
+    reload: loadConversations,
     search,
     getUnassigned,
-    assignAttendant
+    assignAttendant,
   };
 }

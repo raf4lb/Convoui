@@ -1,15 +1,16 @@
-import { Plus, Search, MoreVertical, Mail, MessageSquare } from 'lucide-react';
-import { Input } from '../../components/ui/input';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
-import { Avatar, AvatarFallback } from '../../components/ui/avatar';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '../../components/ui/dropdown-menu';
-import { useAttendants } from '../hooks/useAttendants';
+import { Plus, Search, MoreVertical, Mail, MessageSquare } from "lucide-react";
+
+import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu";
+import { Input } from "../../components/ui/input";
+import { useAttendants } from "../hooks/useAttendants";
 
 export function AttendantPanel() {
   const { attendants, loading } = useAttendants();
@@ -32,10 +33,7 @@ export function AttendantPanel() {
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
-          <Input 
-            placeholder="Buscar atendentes..." 
-            className="pl-9 bg-neutral-50 border-0"
-          />
+          <Input placeholder="Buscar atendentes..." className="pl-9 bg-neutral-50 border-0" />
         </div>
       </div>
 
@@ -55,14 +53,21 @@ export function AttendantPanel() {
                     <div className="relative">
                       <Avatar className="w-12 h-12">
                         <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
-                          {attendant.name.split(' ').map(n => n[0]).join('')}
+                          {attendant.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
-                      <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-white ${
-                        attendant.status === 'online' ? 'bg-emerald-500' :
-                        attendant.status === 'away' ? 'bg-amber-500' :
-                        'bg-neutral-300'
-                      }`} />
+                      <div
+                        className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-white ${
+                          attendant.status === "online"
+                            ? "bg-emerald-500"
+                            : attendant.status === "away"
+                              ? "bg-amber-500"
+                              : "bg-neutral-300"
+                        }`}
+                      />
                     </div>
                     <div>
                       <h3 className="text-neutral-900">{attendant.name}</h3>
@@ -88,18 +93,27 @@ export function AttendantPanel() {
                 </div>
 
                 <div className="flex items-center gap-2 mb-3">
-                  <Badge variant={
-                    attendant.status === 'online' ? 'default' :
-                    attendant.status === 'away' ? 'secondary' :
-                    'outline'
-                  } className={
-                    attendant.status === 'online' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                    attendant.status === 'away' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                    'bg-neutral-50 text-neutral-600'
-                  }>
-                    {attendant.status === 'online' ? 'Online' :
-                     attendant.status === 'away' ? 'Ausente' :
-                     'Offline'}
+                  <Badge
+                    variant={
+                      attendant.status === "online"
+                        ? "default"
+                        : attendant.status === "away"
+                          ? "secondary"
+                          : "outline"
+                    }
+                    className={
+                      attendant.status === "online"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : attendant.status === "away"
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : "bg-neutral-50 text-neutral-600"
+                    }
+                  >
+                    {attendant.status === "online"
+                      ? "Online"
+                      : attendant.status === "away"
+                        ? "Ausente"
+                        : "Offline"}
                   </Badge>
                 </div>
 
@@ -108,9 +122,7 @@ export function AttendantPanel() {
                     <MessageSquare className="w-4 h-4 text-emerald-500" />
                     <span className="text-neutral-600">{attendant.activeChats} ativas</span>
                   </div>
-                  <span className="text-sm text-neutral-500">
-                    {attendant.totalChats} total
-                  </span>
+                  <span className="text-sm text-neutral-500">{attendant.totalChats} total</span>
                 </div>
               </div>
             ))}

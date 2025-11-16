@@ -1,21 +1,22 @@
-import { TrendingUp, MessageSquare, Clock, ThumbsUp, Users, Calendar } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { 
-  LineChart, 
-  Line, 
-  BarChart, 
-  Bar, 
-  PieChart, 
-  Pie, 
+import { TrendingUp, MessageSquare, Clock, ThumbsUp, Users, Calendar } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
   Cell,
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
-  Legend 
-} from 'recharts';
-import { useMetrics } from '../hooks/useMetrics';
+  Legend,
+} from "recharts";
+
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { useMetrics } from "../hooks/useMetrics";
 
 export function Dashboard() {
   const {
@@ -25,7 +26,7 @@ export function Dashboard() {
     hourlyData,
     statusData,
     detailedPerformance,
-    loading
+    loading,
   } = useMetrics();
 
   if (loading || !metrics) {
@@ -61,8 +62,7 @@ export function Dashboard() {
             <CardContent>
               <div className="text-2xl text-neutral-900 mb-1">{metrics.totalConversations}</div>
               <p className="text-xs text-emerald-600 flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" />
-                +{metrics.trend.conversations}% vs semana anterior
+                <TrendingUp className="w-3 h-3" />+{metrics.trend.conversations}% vs semana anterior
               </p>
             </CardContent>
           </Card>
@@ -89,8 +89,7 @@ export function Dashboard() {
             <CardContent>
               <div className="text-2xl text-neutral-900 mb-1">{metrics.satisfactionRate}/5.0</div>
               <p className="text-xs text-emerald-600 flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" />
-                +{metrics.trend.satisfaction} pontos
+                <TrendingUp className="w-3 h-3" />+{metrics.trend.satisfaction} pontos
               </p>
             </CardContent>
           </Card>
@@ -101,8 +100,12 @@ export function Dashboard() {
               <Users className="w-4 h-4 text-purple-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl text-neutral-900 mb-1">{metrics.activeAttendants}/{metrics.totalAttendants}</div>
-              <p className="text-xs text-neutral-500">{metrics.activeConversationsCount} conversas ativas</p>
+              <div className="text-2xl text-neutral-900 mb-1">
+                {metrics.activeAttendants}/{metrics.totalAttendants}
+              </div>
+              <p className="text-xs text-neutral-500">
+                {metrics.activeConversationsCount} conversas ativas
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -118,42 +121,32 @@ export function Dashboard() {
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={conversationsByDay}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="#737373"
-                    style={{ fontSize: '12px' }}
-                  />
-                  <YAxis 
-                    stroke="#737373"
-                    style={{ fontSize: '12px' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'white', 
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '8px',
-                      fontSize: '14px'
+                  <XAxis dataKey="date" stroke="#737373" style={{ fontSize: "12px" }} />
+                  <YAxis stroke="#737373" style={{ fontSize: "12px" }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e5e5",
+                      borderRadius: "8px",
+                      fontSize: "14px",
                     }}
                   />
-                  <Legend 
-                    wrapperStyle={{ fontSize: '14px' }}
-                    iconType="circle"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="conversas" 
-                    stroke="#10b981" 
+                  <Legend wrapperStyle={{ fontSize: "14px" }} iconType="circle" />
+                  <Line
+                    type="monotone"
+                    dataKey="conversas"
+                    stroke="#10b981"
                     strokeWidth={2}
                     name="Total"
-                    dot={{ fill: '#10b981', r: 4 }}
+                    dot={{ fill: "#10b981", r: 4 }}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="resolvidas" 
-                    stroke="#3b82f6" 
+                  <Line
+                    type="monotone"
+                    dataKey="resolvidas"
+                    stroke="#3b82f6"
                     strokeWidth={2}
                     name="Resolvidas"
-                    dot={{ fill: '#3b82f6', r: 4 }}
+                    dot={{ fill: "#3b82f6", r: 4 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -182,12 +175,12 @@ export function Dashboard() {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'white', 
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '8px',
-                      fontSize: '14px'
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e5e5",
+                      borderRadius: "8px",
+                      fontSize: "14px",
                     }}
                   />
                 </PieChart>
@@ -207,29 +200,17 @@ export function Dashboard() {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={attendantPerformance}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-                  <XAxis 
-                    dataKey="name" 
-                    stroke="#737373"
-                    style={{ fontSize: '12px' }}
-                  />
-                  <YAxis 
-                    stroke="#737373"
-                    style={{ fontSize: '12px' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'white', 
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '8px',
-                      fontSize: '14px'
+                  <XAxis dataKey="name" stroke="#737373" style={{ fontSize: "12px" }} />
+                  <YAxis stroke="#737373" style={{ fontSize: "12px" }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e5e5",
+                      borderRadius: "8px",
+                      fontSize: "14px",
                     }}
                   />
-                  <Bar 
-                    dataKey="conversas" 
-                    fill="#10b981" 
-                    radius={[8, 8, 0, 0]}
-                    name="Conversas"
-                  />
+                  <Bar dataKey="conversas" fill="#10b981" radius={[8, 8, 0, 0]} name="Conversas" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -244,29 +225,17 @@ export function Dashboard() {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={hourlyData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-                  <XAxis 
-                    dataKey="hora" 
-                    stroke="#737373"
-                    style={{ fontSize: '12px' }}
-                  />
-                  <YAxis 
-                    stroke="#737373"
-                    style={{ fontSize: '12px' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'white', 
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '8px',
-                      fontSize: '14px'
+                  <XAxis dataKey="hora" stroke="#737373" style={{ fontSize: "12px" }} />
+                  <YAxis stroke="#737373" style={{ fontSize: "12px" }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e5e5",
+                      borderRadius: "8px",
+                      fontSize: "14px",
                     }}
                   />
-                  <Bar 
-                    dataKey="mensagens" 
-                    fill="#3b82f6" 
-                    radius={[8, 8, 0, 0]}
-                    name="Mensagens"
-                  />
+                  <Bar dataKey="mensagens" fill="#3b82f6" radius={[8, 8, 0, 0]} name="Mensagens" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -284,7 +253,9 @@ export function Dashboard() {
                 <thead>
                   <tr className="border-b border-neutral-200">
                     <th className="text-left py-3 px-4 text-sm text-neutral-600">Atendente</th>
-                    <th className="text-left py-3 px-4 text-sm text-neutral-600">Conversas Totais</th>
+                    <th className="text-left py-3 px-4 text-sm text-neutral-600">
+                      Conversas Totais
+                    </th>
                     <th className="text-left py-3 px-4 text-sm text-neutral-600">Ativas</th>
                     <th className="text-left py-3 px-4 text-sm text-neutral-600">Resolvidas</th>
                     <th className="text-left py-3 px-4 text-sm text-neutral-600">Tempo Médio</th>
@@ -293,7 +264,10 @@ export function Dashboard() {
                 </thead>
                 <tbody>
                   {detailedPerformance.map((attendant) => (
-                    <tr key={attendant.name} className="border-b border-neutral-100 hover:bg-neutral-50">
+                    <tr
+                      key={attendant.name}
+                      className="border-b border-neutral-100 hover:bg-neutral-50"
+                    >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-sm">

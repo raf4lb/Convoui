@@ -7,7 +7,9 @@ O sistema implementa um modelo **multi-tenant** com autenticação baseada em ro
 ## Arquitetura Multi-Tenant
 
 ### Isolamento de Dados
+
 Cada empresa (tenant) possui:
+
 - ✅ Seus próprios usuários (ADMINISTRATOR, MANAGER, ATTENDANT)
 - ✅ Suas próprias conversas e mensagens
 - ✅ Seus próprios clientes/contatos
@@ -15,6 +17,7 @@ Cada empresa (tenant) possui:
 - ✅ Configurações independentes
 
 ### Estrutura de Empresa (Company)
+
 ```typescript
 interface Company {
   id: string;
@@ -30,9 +33,11 @@ interface Company {
 ## Tipos de Usuários (Roles)
 
 ### 1. ADMINISTRATOR (Administrador)
+
 **Acesso Total** - Controle completo da empresa
 
 #### Permissões:
+
 - ✅ Criar/editar/deletar ADMINISTRATORS
 - ✅ Criar/editar/deletar MANAGERS
 - ✅ Criar/editar/deletar ATTENDANTS
@@ -44,14 +49,17 @@ interface Company {
 - ✅ Acesso ao dashboard completo
 
 #### Casos de Uso:
+
 - Dono da empresa
 - Gerente geral com controle total
 - Responsável pela conta
 
 ### 2. MANAGER (Gerente)
+
 **Gerenciamento Operacional** - Supervisiona atendentes
 
 #### Permissões:
+
 - ✅ Criar/editar/deletar ATTENDANTS
 - ✅ Visualizar todos os usuários
 - ✅ Visualizar todas as conversas
@@ -61,25 +69,30 @@ interface Company {
 - ✅ Acesso ao dashboard
 
 #### Restrições:
+
 - ❌ Não pode criar ADMINISTRATORS
 - ❌ Não pode criar MANAGERS
 - ❌ Não pode editar configurações da empresa
 
 #### Casos de Uso:
+
 - Supervisor de equipe
 - Coordenador de atendimento
 - Líder de operações
 
 ### 3. ATTENDANT (Atendente)
+
 **Atendimento** - Responde conversas
 
 #### Permissões:
+
 - ✅ Visualizar conversas atribuídas
 - ✅ Responder mensagens
 - ✅ Visualizar informações da empresa
 - ✅ Visualizar próprias métricas
 
 #### Restrições:
+
 - ❌ Não pode criar usuários
 - ❌ Não pode visualizar conversas de outros atendentes
 - ❌ Não pode atribuir conversas
@@ -87,6 +100,7 @@ interface Company {
 - ❌ Acesso limitado ao dashboard
 
 #### Casos de Uso:
+
 - Atendente de suporte
 - Operador de chat
 - Agente de relacionamento
@@ -104,16 +118,16 @@ enum Permission {
   UPDATE_USER,
   DELETE_USER,
   VIEW_USERS,
-  
+
   // Gerenciamento de Conversas
   VIEW_CONVERSATIONS,
   ASSIGN_CONVERSATION,
   VIEW_ALL_CONVERSATIONS,
-  
+
   // Gerenciamento da Empresa
   UPDATE_COMPANY,
   VIEW_COMPANY,
-  
+
   // Métricas
   VIEW_DASHBOARD,
   VIEW_ALL_METRICS,
@@ -123,26 +137,27 @@ enum Permission {
 
 ### Matriz de Permissões
 
-| Permissão | ADMINISTRATOR | MANAGER | ATTENDANT |
-|-----------|---------------|---------|-----------|
-| CREATE_ADMINISTRATOR | ✅ | ❌ | ❌ |
-| CREATE_MANAGER | ✅ | ❌ | ❌ |
-| CREATE_ATTENDANT | ✅ | ✅ | ❌ |
-| UPDATE_USER | ✅ | ❌ | ❌ |
-| DELETE_USER | ✅ | ❌ | ❌ |
-| VIEW_USERS | ✅ | ✅ | ❌ |
-| VIEW_CONVERSATIONS | ✅ | ✅ | ✅ |
-| ASSIGN_CONVERSATION | ✅ | ✅ | ❌ |
-| VIEW_ALL_CONVERSATIONS | ✅ | ✅ | ❌ |
-| UPDATE_COMPANY | ✅ | ❌ | ❌ |
-| VIEW_COMPANY | ✅ | ✅ | ✅ |
-| VIEW_DASHBOARD | ✅ | ✅ | ❌ |
-| VIEW_ALL_METRICS | ✅ | ✅ | ❌ |
-| VIEW_OWN_METRICS | ❌ | ❌ | ✅ |
+| Permissão              | ADMINISTRATOR | MANAGER | ATTENDANT |
+| ---------------------- | ------------- | ------- | --------- |
+| CREATE_ADMINISTRATOR   | ✅            | ❌      | ❌        |
+| CREATE_MANAGER         | ✅            | ❌      | ❌        |
+| CREATE_ATTENDANT       | ✅            | ✅      | ❌        |
+| UPDATE_USER            | ✅            | ❌      | ❌        |
+| DELETE_USER            | ✅            | ❌      | ❌        |
+| VIEW_USERS             | ✅            | ✅      | ❌        |
+| VIEW_CONVERSATIONS     | ✅            | ✅      | ✅        |
+| ASSIGN_CONVERSATION    | ✅            | ✅      | ❌        |
+| VIEW_ALL_CONVERSATIONS | ✅            | ✅      | ❌        |
+| UPDATE_COMPANY         | ✅            | ❌      | ❌        |
+| VIEW_COMPANY           | ✅            | ✅      | ✅        |
+| VIEW_DASHBOARD         | ✅            | ✅      | ❌        |
+| VIEW_ALL_METRICS       | ✅            | ✅      | ❌        |
+| VIEW_OWN_METRICS       | ❌            | ❌      | ✅        |
 
 ## Fluxo de Autenticação
 
 ### 1. Login
+
 ```
 User submits credentials
       ↓
@@ -162,6 +177,7 @@ Returns AuthSession
 ```
 
 ### 2. Session Validation
+
 ```
 App loads
       ↓
@@ -175,6 +191,7 @@ Returns user session with company data
 ```
 
 ### 3. Permission Check
+
 ```
 User tries to perform action
       ↓
@@ -197,9 +214,9 @@ import { Permission } from '../../domain/entities/Permission';
 
 function MyComponent() {
   const { hasPermission } = useAuth();
-  
+
   const canCreateUser = hasPermission(Permission.CREATE_ATTENDANT);
-  
+
   return (
     <div>
       {canCreateUser && (
@@ -228,20 +245,22 @@ const canManageUsers = hasAnyPermission([
 const { session } = useAuth();
 
 if (session) {
-  console.log('User:', session.user.name);
-  console.log('Company:', session.company.name);
-  console.log('Role:', session.user.role);
+  console.log("User:", session.user.name);
+  console.log("Company:", session.company.name);
+  console.log("Role:", session.user.role);
 }
 ```
 
 ## Use Cases de Autenticação
 
 ### Login
+
 ```typescript
 const session = await loginUseCase.execute(email, password);
 ```
 
 **Validações:**
+
 - Email válido
 - Senha com mínimo 6 caracteres
 - Usuário existe
@@ -250,11 +269,13 @@ const session = await loginUseCase.execute(email, password);
 - Empresa ativa
 
 ### Logout
+
 ```typescript
 await logoutUseCase.execute(token);
 ```
 
 ### Validar Sessão
+
 ```typescript
 const session = await validateSessionUseCase.execute(token);
 ```
@@ -262,20 +283,22 @@ const session = await validateSessionUseCase.execute(token);
 ## Use Cases de Usuários
 
 ### Criar Usuário
+
 ```typescript
 const user = await createUserUseCase.execute(
   {
-    companyId: '1',
-    name: 'João Silva',
-    email: 'joao@empresa.com',
-    password: '123456',
+    companyId: "1",
+    name: "João Silva",
+    email: "joao@empresa.com",
+    password: "123456",
     role: UserRole.ATTENDANT,
   },
-  creatorRole // Role do usuário que está criando
+  creatorRole, // Role do usuário que está criando
 );
 ```
 
 **Validações:**
+
 - Permissão para criar o tipo de usuário
 - Nome com mínimo 3 caracteres
 - Email válido
@@ -283,28 +306,34 @@ const user = await createUserUseCase.execute(
 - Email não está em uso
 
 ### Obter Usuários da Empresa
+
 ```typescript
 const users = await getUsersByCompanyUseCase.execute(companyId, userRole);
 ```
 
 **Validações:**
+
 - Usuário tem permissão VIEW_USERS
 
 ## Segurança
 
 ### Tokens
+
 - Gerados aleatoriamente
 - Armazenados em memória (Map)
 - Expiram em 24 horas
 - Validados em cada requisição
 
 ### Senhas
+
 ⚠️ **Nota de Produção**: Atualmente as senhas são armazenadas em texto plano para simplicidade do mock. Em produção:
+
 - Use bcrypt ou argon2 para hash
 - Nunca retorne senhas nas respostas
 - Implemente política de senhas fortes
 
 ### Isolamento de Dados
+
 - Todos os dados são filtrados por `companyId`
 - Usuários só acessam dados de sua empresa
 - Validações em nível de use case
@@ -314,16 +343,19 @@ const users = await getUsersByCompanyUseCase.execute(companyId, userRole);
 ### Empresa: Tech Solutions Ltda
 
 **Administrador:**
+
 - Email: `admin@techsolutions.com`
 - Senha: `123456`
 - Acesso: Total
 
 **Gerente:**
+
 - Email: `carlos@techsolutions.com`
 - Senha: `123456`
 - Acesso: Gerenciamento de atendentes
 
 **Atendente:**
+
 - Email: `joao@techsolutions.com`
 - Senha: `123456`
 - Acesso: Atendimento
@@ -331,6 +363,7 @@ const users = await getUsersByCompanyUseCase.execute(companyId, userRole);
 ### Empresa: Comércio Digital SA
 
 **Administrador:**
+
 - Email: `admin@comerciodigital.com`
 - Senha: `123456`
 - Acesso: Total
@@ -340,14 +373,16 @@ const users = await getUsersByCompanyUseCase.execute(companyId, userRole);
 ### Adicionar Nova Permissão
 
 1. Adicione ao enum `Permission`:
+
 ```typescript
 enum Permission {
   // ...
-  NEW_PERMISSION = 'NEW_PERMISSION',
+  NEW_PERMISSION = "NEW_PERMISSION",
 }
 ```
 
 2. Adicione aos roles necessários:
+
 ```typescript
 export const RolePermissions: Record<UserRole, Permission[]> = {
   [UserRole.ADMINISTRATOR]: [
@@ -359,6 +394,7 @@ export const RolePermissions: Record<UserRole, Permission[]> = {
 ```
 
 3. Use no componente:
+
 ```typescript
 const canDoSomething = hasPermission(Permission.NEW_PERMISSION);
 ```
@@ -366,20 +402,20 @@ const canDoSomething = hasPermission(Permission.NEW_PERMISSION);
 ### Adicionar Novo Role
 
 1. Adicione ao enum `UserRole`:
+
 ```typescript
 enum UserRole {
   // ...
-  NEW_ROLE = 'NEW_ROLE',
+  NEW_ROLE = "NEW_ROLE",
 }
 ```
 
 2. Defina permissões:
+
 ```typescript
 export const RolePermissions: Record<UserRole, Permission[]> = {
   // ...
-  [UserRole.NEW_ROLE]: [
-    Permission.SOME_PERMISSION,
-  ],
+  [UserRole.NEW_ROLE]: [Permission.SOME_PERMISSION],
 };
 ```
 
@@ -388,6 +424,7 @@ export const RolePermissions: Record<UserRole, Permission[]> = {
 ## Melhores Práticas
 
 ### ✅ Fazer
+
 - Sempre verificar permissões antes de renderizar UI
 - Validar permissões no backend (use cases)
 - Usar permissões granulares
@@ -395,6 +432,7 @@ export const RolePermissions: Record<UserRole, Permission[]> = {
 - Logar ações importantes
 
 ### ❌ Evitar
+
 - Confiar apenas em validações de frontend
 - Expor dados de outras empresas
 - Usar roles hardcoded ao invés de permissões
@@ -403,6 +441,7 @@ export const RolePermissions: Record<UserRole, Permission[]> = {
 ## Próximos Passos
 
 ### Produção
+
 - [ ] Implementar hash de senhas
 - [ ] Adicionar refresh tokens
 - [ ] Implementar rate limiting
@@ -412,6 +451,7 @@ export const RolePermissions: Record<UserRole, Permission[]> = {
 - [ ] Bloqueio após tentativas falhas
 
 ### Features
+
 - [ ] Convites por email
 - [ ] Recuperação de senha
 - [ ] Níveis de permissão customizáveis

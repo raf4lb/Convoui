@@ -1,7 +1,13 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AuthSession } from '../../domain/entities/AuthSession';
-import { Permission } from '../../domain/entities/Permission';
-import { loginUseCase, logoutUseCase, validateSessionUseCase, checkPermissionUseCase } from '../../infrastructure/di/container';
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+
+import { AuthSession } from "../../domain/entities/AuthSession";
+import { Permission } from "../../domain/entities/Permission";
+import {
+  loginUseCase,
+  logoutUseCase,
+  validateSessionUseCase,
+  checkPermissionUseCase,
+} from "../../infrastructure/di/container";
 
 interface AuthContextType {
   session: AuthSession | null;
@@ -14,7 +20,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const TOKEN_KEY = 'auth_token';
+const TOKEN_KEY = "auth_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<AuthSession | null>(null);
@@ -36,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
     } catch (error) {
-      console.error('Error validating session:', error);
+      console.error("Error validating session:", error);
       localStorage.removeItem(TOKEN_KEY);
     } finally {
       setLoading(false);
@@ -61,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(null);
       localStorage.removeItem(TOKEN_KEY);
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error("Error logging out:", error);
     }
   };
 
@@ -72,11 +78,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const hasAnyPermission = (permissions: Permission[]): boolean => {
     if (!session) return false;
-    return permissions.some(p => hasPermission(p));
+    return permissions.some((p) => hasPermission(p));
   };
 
   return (
-    <AuthContext.Provider value={{ session, loading, login, logout, hasPermission, hasAnyPermission }}>
+    <AuthContext.Provider
+      value={{ session, loading, login, logout, hasPermission, hasAnyPermission }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -85,7 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

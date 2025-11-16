@@ -9,7 +9,7 @@ export interface Conversation {
   unread: number;
   assignedToUserId: string | null;
   assignedToUserName: string | null;
-  status: 'active' | 'pending' | 'resolved';
+  status: "active" | "pending" | "resolved";
   createdAt: Date;
   updatedAt: Date;
 }

@@ -5,6 +5,7 @@ Esta camada é responsável por toda a **interface do usuário** e **interação
 ## Estrutura
 
 ### 🎨 Components (Componentes)
+
 Componentes React puros focados apenas em renderização e interação visual.
 
 - **Sidebar**: Menu lateral de navegação
@@ -14,6 +15,7 @@ Componentes React puros focados apenas em renderização e interação visual.
 - **Dashboard**: Dashboard com métricas e gráficos
 
 ### 🪝 Hooks (Custom Hooks)
+
 Fazem a ponte entre os componentes React e os use cases do domínio.
 
 - **useConversations**: Gerencia lista de conversas
@@ -24,6 +26,7 @@ Fazem a ponte entre os componentes React e os use cases do domínio.
 ## Responsabilidades
 
 ### Components
+
 ✅ Renderizar UI
 ✅ Capturar eventos do usuário
 ✅ Usar custom hooks para obter dados
@@ -34,6 +37,7 @@ Fazem a ponte entre os componentes React e os use cases do domínio.
 ❌ Conhecer detalhes de implementação de dados
 
 ### Hooks
+
 ✅ Chamar use cases
 ✅ Gerenciar estado de loading/error
 ✅ Prover dados formatados para componentes
@@ -49,9 +53,9 @@ Fazem a ponte entre os componentes React e os use cases do domínio.
 // 1. Component usa o hook
 function ConversationList() {
   const { conversations, loading } = useConversations();
-  
+
   if (loading) return <div>Carregando...</div>;
-  
+
   return (
     <div>
       {conversations.map(conv => (
@@ -65,7 +69,7 @@ function ConversationList() {
 function useConversations() {
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     const load = async () => {
       setLoading(true);
@@ -75,7 +79,7 @@ function useConversations() {
     };
     load();
   }, []);
-  
+
   return { conversations, loading };
 }
 

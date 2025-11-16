@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Message } from '../../domain/entities/Message';
-import { getConversationMessagesUseCase } from '../../infrastructure/di/container';
+import { useState, useEffect } from "react";
+
+import { Message } from "../../domain/entities/Message";
+import { getConversationMessagesUseCase } from "../../infrastructure/di/container";
 
 export function useConversationMessages(conversationId: string | null) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -15,7 +16,7 @@ export function useConversationMessages(conversationId: string | null) {
 
   const loadMessages = async () => {
     if (!conversationId) return;
-    
+
     try {
       setLoading(true);
       const data = await getConversationMessagesUseCase.execute(conversationId);

@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
-import { 
+import { useState, useEffect } from "react";
+
+import {
   DashboardMetrics,
   ConversationByDay,
   AttendantPerformance,
   HourlyData,
   StatusData,
-  AttendantDetailedPerformance
-} from '../../domain/entities/Metrics';
-import { getDashboardMetricsUseCase, metricsRepository } from '../../infrastructure/di/container';
+  AttendantDetailedPerformance,
+} from "../../domain/entities/Metrics";
+import { getDashboardMetricsUseCase, metricsRepository } from "../../infrastructure/di/container";
 
 export function useMetrics() {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
@@ -15,7 +16,9 @@ export function useMetrics() {
   const [attendantPerformance, setAttendantPerformance] = useState<AttendantPerformance[]>([]);
   const [hourlyData, setHourlyData] = useState<HourlyData[]>([]);
   const [statusData, setStatusData] = useState<StatusData[]>([]);
-  const [detailedPerformance, setDetailedPerformance] = useState<AttendantDetailedPerformance[]>([]);
+  const [detailedPerformance, setDetailedPerformance] = useState<AttendantDetailedPerformance[]>(
+    [],
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -26,14 +29,14 @@ export function useMetrics() {
   const loadMetrics = async () => {
     try {
       setLoading(true);
-      
+
       const [
         metricsData,
         conversationsData,
         performanceData,
         hourlyDataResult,
         statusDataResult,
-        detailedPerformanceData
+        detailedPerformanceData,
       ] = await Promise.all([
         getDashboardMetricsUseCase.execute(),
         metricsRepository.getConversationsByDay(),
@@ -66,6 +69,6 @@ export function useMetrics() {
     detailedPerformance,
     loading,
     error,
-    reload: loadMetrics
+    reload: loadMetrics,
   };
 }

@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { Plus, Search, MoreVertical, Phone, Mail, Tag } from 'lucide-react';
-import { Input } from '../../components/ui/input';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { useState } from "react";
+
+import { Plus, Search, MoreVertical, Phone, Mail, Tag } from "lucide-react";
+
+import { Alert, AlertDescription } from "../../components/ui/alert";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -11,25 +13,25 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../components/ui/dialog';
-import { Alert, AlertDescription } from '../../components/ui/alert';
-import { useAuth } from '../contexts/AuthContext';
-import { useCustomers } from '../hooks/useCustomers';
-import { Textarea } from '../../components/ui/textarea';
+} from "../../components/ui/dialog";
+import { Input } from "../../components/ui/input";
+import { Textarea } from "../../components/ui/textarea";
+import { useAuth } from "../contexts/AuthContext";
+import { useCustomers } from "../hooks/useCustomers";
 
 export function CustomerManagement() {
   const { session } = useAuth();
   const { customers, loading, search, createCustomer } = useCustomers();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    tags: '',
-    notes: '',
+    name: "",
+    phone: "",
+    email: "",
+    tags: "",
+    notes: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [creating, setCreating] = useState(false);
 
   if (!session) return null;
@@ -41,14 +43,14 @@ export function CustomerManagement() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setCreating(true);
 
     try {
       const tags = formData.tags
-        .split(',')
-        .map(t => t.trim())
-        .filter(t => t.length > 0);
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t.length > 0);
 
       await createCustomer({
         name: formData.name,
@@ -60,27 +62,27 @@ export function CustomerManagement() {
 
       setIsDialogOpen(false);
       setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        tags: '',
-        notes: '',
+        name: "",
+        phone: "",
+        email: "",
+        tags: "",
+        notes: "",
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao criar cliente');
+      setError(err instanceof Error ? err.message : "Erro ao criar cliente");
     } finally {
       setCreating(false);
     }
   };
 
   const formatDate = (date?: Date) => {
-    if (!date) return 'Nunca';
-    return new Date(date).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    if (!date) return "Nunca";
+    return new Date(date).toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -105,9 +107,7 @@ export function CustomerManagement() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Adicionar Novo Cliente</DialogTitle>
-                <DialogDescription>
-                  Cadastre um novo cliente na sua base
-                </DialogDescription>
+                <DialogDescription>Cadastre um novo cliente na sua base</DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
@@ -170,12 +170,12 @@ export function CustomerManagement() {
                   />
                 </div>
 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full bg-emerald-500 hover:bg-emerald-600"
                   disabled={creating}
                 >
-                  {creating ? 'Cadastrando...' : 'Cadastrar Cliente'}
+                  {creating ? "Cadastrando..." : "Cadastrar Cliente"}
                 </Button>
               </form>
             </DialogContent>
@@ -185,8 +185,8 @@ export function CustomerManagement() {
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
-          <Input 
-            placeholder="Buscar por nome, telefone, email ou tags..." 
+          <Input
+            placeholder="Buscar por nome, telefone, email ou tags..."
             className="pl-9 bg-neutral-50 border-0"
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
@@ -208,7 +208,11 @@ export function CustomerManagement() {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white">
-                        {customer.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                        {customer.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .substring(0, 2)}
                       </div>
                       <div className="flex-1 min-w-0">
                         <CardTitle className="text-base truncate">{customer.name}</CardTitle>
@@ -240,11 +244,11 @@ export function CustomerManagement() {
                       ))}
                     </div>
                   )}
-                  
+
                   {customer.notes && (
                     <p className="text-sm text-neutral-600 line-clamp-2">{customer.notes}</p>
                   )}
-                  
+
                   <div className="pt-2 border-t border-neutral-100">
                     <p className="text-xs text-neutral-500">
                       Último contato: {formatDate(customer.lastContactAt)}

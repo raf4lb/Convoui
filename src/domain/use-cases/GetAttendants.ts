@@ -1,5 +1,5 @@
-import { IAttendantRepository } from '../repositories/IAttendantRepository';
-import { Attendant } from '../entities/Attendant';
+import { Attendant } from "../entities/Attendant";
+import { IAttendantRepository } from "../repositories/IAttendantRepository";
 
 export class GetAttendants {
   constructor(private attendantRepository: IAttendantRepository) {}

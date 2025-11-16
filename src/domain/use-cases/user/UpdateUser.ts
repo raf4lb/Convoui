@@ -1,6 +1,6 @@
-import { IUserRepository } from '../../repositories/IUserRepository';
-import { User, UserRole, UserWithoutPassword } from '../../entities/User';
-import { Permission, RolePermissions } from '../../entities/Permission';
+import { Permission, RolePermissions } from "../../entities/Permission";
+import { User, UserRole, UserWithoutPassword } from "../../entities/User";
+import { IUserRepository } from "../../repositories/IUserRepository";
 
 export class UpdateUser {
   constructor(private userRepository: IUserRepository) {}
@@ -8,12 +8,12 @@ export class UpdateUser {
   async execute(
     userId: string,
     updates: Partial<User>,
-    updaterRole: UserRole
+    updaterRole: UserRole,
   ): Promise<UserWithoutPassword> {
     // Get user to update
     const userToUpdate = await this.userRepository.getById(userId);
     if (!userToUpdate) {
-      throw new Error('Usuário não encontrado');
+      throw new Error("Usuário não encontrado");
     }
 
     // Validate permissions
@@ -32,16 +32,19 @@ export class UpdateUser {
   private validatePermissions(targetRole: UserRole, updaterRole: UserRole): void {
     const permissions = RolePermissions[updaterRole];
 
-    if (targetRole === UserRole.ADMINISTRATOR && !permissions.includes(Permission.CREATE_ADMINISTRATOR)) {
-      throw new Error('Sem permissão para editar administradores');
+    if (
+      targetRole === UserRole.ADMINISTRATOR &&
+      !permissions.includes(Permission.CREATE_ADMINISTRATOR)
+    ) {
+      throw new Error("Sem permissão para editar administradores");
     }
 
     if (targetRole === UserRole.MANAGER && !permissions.includes(Permission.CREATE_MANAGER)) {
-      throw new Error('Sem permissão para editar gerentes');
+      throw new Error("Sem permissão para editar gerentes");
     }
 
     if (targetRole === UserRole.ATTENDANT && !permissions.includes(Permission.CREATE_ATTENDANT)) {
-      throw new Error('Sem permissão para editar atendentes');
+      throw new Error("Sem permissão para editar atendentes");
     }
   }
 }
