@@ -16,7 +16,6 @@ Este projeto segue os princípios do **Clean Architecture** (Arquitetura Limpa),
 │   │   └── Metrics.ts
 │   ├── repositories/         # Interfaces dos repositórios (contratos)
 │   │   ├── IConversationRepository.ts
-│   │   ├── IAttendantRepository.ts
 │   │   └── IMetricsRepository.ts
 │   └── use-cases/           # Casos de uso (lógica de aplicação)
 │       ├── GetConversations.ts
@@ -29,7 +28,6 @@ Este projeto segue os princípios do **Clean Architecture** (Arquitetura Limpa),
 ├── data/                     # Camada de Dados
 │   └── repositories/        # Implementações dos repositórios
 │       ├── ConversationRepository.ts
-│       ├── AttendantRepository.ts
 │       └── MetricsRepository.ts
 │
 ├── infrastructure/          # Camada de Infraestrutura

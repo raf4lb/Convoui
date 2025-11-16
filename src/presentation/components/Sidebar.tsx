@@ -1,15 +1,6 @@
-import {
-  MessageSquare,
-  Users,
-  Settings,
-  BarChart3,
-  UserCog,
-  LogOut,
-  UsersRound,
-} from "lucide-react";
+import { BarChart3, LogOut, MessageSquare, Settings, UserCog, UsersRound } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
-import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -143,7 +143,6 @@ Senha: 123456
 │   │   ├── IUserRepository.ts
 │   │   ├── IAuthRepository.ts
 │   │   ├── IConversationRepository.ts
-│   │   ├── IAttendantRepository.ts
 │   │   └── IMetricsRepository.ts
 │   └── use-cases/             # Casos de uso
 │       ├── auth/
@@ -162,7 +161,6 @@ Senha: 123456
 │       ├── UserRepository.ts
 │       ├── AuthRepository.ts
 │       ├── ConversationRepository.ts
-│       ├── AttendantRepository.ts
 │       └── MetricsRepository.ts
 │
 ├── infrastructure/             # Infraestrutura

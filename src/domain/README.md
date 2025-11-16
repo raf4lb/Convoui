@@ -18,7 +18,6 @@ Modelos de dados puros que representam os conceitos centrais do domínio.
 Contratos que definem como acessar dados. Apenas interfaces, sem implementação.
 
 - **IConversationRepository**: Contrato para gerenciar conversas
-- **IAttendantRepository**: Contrato para gerenciar atendentes
 - **IMetricsRepository**: Contrato para obter métricas
 
 ### ⚙️ Use Cases (Casos de Uso)

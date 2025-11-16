@@ -1,12 +1,12 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 import { AuthSession } from "../../domain/entities/AuthSession";
 import { Permission } from "../../domain/entities/Permission";
 import {
+  checkPermissionUseCase,
   loginUseCase,
   logoutUseCase,
   validateSessionUseCase,
-  checkPermissionUseCase,
 } from "../../infrastructure/di/container";
 
 interface AuthContextType {
@@ -50,13 +50,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string) => {
-    try {
-      const newSession = await loginUseCase.execute(email, password);
-      setSession(newSession);
-      localStorage.setItem(TOKEN_KEY, newSession.token);
-    } catch (error) {
-      throw error;
-    }
+    const newSession = await loginUseCase.execute(email, password);
+    setSession(newSession);
+    localStorage.setItem(TOKEN_KEY, newSession.token);
   };
 
   const logout = async () => {

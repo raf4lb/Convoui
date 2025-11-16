@@ -1,23 +1,20 @@
 import { useEffect, useState } from "react";
 
-import { Plus } from "lucide-react";
-
 import { Alert, AlertDescription } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogTrigger,
 } from "../../components/ui/dialog";
 import { Input } from "../../components/ui/input";
 import {
   Select,
-  SelectTrigger,
   SelectContent,
   SelectItem,
+  SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
 import { User, UserRole, UserWithoutPassword } from "../../domain/entities/User";
