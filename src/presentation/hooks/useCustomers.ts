@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Customer } from "../../domain/entities/Customer";
 import {
+  createCustomerUseCase,
   getCustomersByCompanyUseCase,
   searchCustomersUseCase,
-  createCustomerUseCase,
 } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -14,14 +14,8 @@ export function useCustomers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    if (session) {
-      loadCustomers();
-    }
-  }, [session]);
-
-  const loadCustomers = async () => {
-    if (!session) return;
+  const loadCustomers = useCallback(async () => {
+    if (!session) throw new Error("No session");
 
     try {
       setLoading(true);
@@ -33,11 +27,16 @@ export function useCustomers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    if (session) {
+      loadCustomers();
+    }
+  }, [session, loadCustomers]);
 
   const search = async (query: string) => {
-    if (!session) return;
-
+    if (!session) throw new Error("No session");
     try {
       setLoading(true);
       const data = await searchCustomersUseCase.execute(session.company.id, query);

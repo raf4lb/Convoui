@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-import { Plus, Search, MoreVertical, Phone, Mail, Tag } from "lucide-react";
+import { Mail, MoreVertical, Phone, Plus, Search, Tag } from "lucide-react";
 
 import { Alert, AlertDescription } from "../../components/ui/alert";
 import { Badge } from "../../components/ui/badge";

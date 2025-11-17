@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-import { MessageSquare, AlertCircle } from "lucide-react";
+import { AlertCircle, MessageSquare } from "lucide-react";
 
 import { Alert, AlertDescription } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";

@@ -1,30 +1,23 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { UserWithoutPassword, UserRole } from "../../domain/entities/User";
+import { UserRole, UserWithoutPassword } from "../../domain/entities/User";
 import {
-  getUsersByCompanyUseCase,
   createUserUseCase,
-  updateUserUseCase,
   deleteUserUseCase,
+  getUsersByCompanyUseCase,
   searchUsersUseCase,
+  updateUserUseCase,
 } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
 
 export function useUsers() {
   const { session } = useAuth();
   const [users, setUsers] = useState<UserWithoutPassword[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    if (session) {
-      loadUsers();
-    }
-  }, [session]);
-
-  const loadUsers = async () => {
-    if (!session) return;
-
+  const loadUsers = useCallback(async () => {
+    if (!session) throw new Error("No session");
     try {
       setLoading(true);
       const data = await getUsersByCompanyUseCase.execute(session.company.id, session.user.role);
@@ -35,10 +28,16 @@ export function useUsers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    if (session) {
+      loadUsers();
+    }
+  }, [session, loadUsers]);
 
   const search = async (query: string, roleFilter?: UserRole) => {
-    if (!session) return;
+    if (!session) throw new Error("No session");
 
     try {
       setLoading(true);

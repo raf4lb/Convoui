@@ -1,5 +1,5 @@
 import { Permission, RolePermissions } from "../../entities/Permission";
-import { User, UserRole, UserWithoutPassword } from "../../entities/User";
+import { UserRole, UserWithoutPassword } from "../../entities/User";
 import { IUserRepository } from "../../repositories/IUserRepository";
 
 export class CreateUser {

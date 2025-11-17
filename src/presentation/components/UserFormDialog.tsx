@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Alert, AlertDescription } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";
@@ -143,7 +143,7 @@ export function UserFormDialog({
 
           <Select
             value={formData.role}
-            onValueChange={(value) => setFormData({ ...formData, role: value as UserRole })}
+            onValueChange={(value: UserRole) => setFormData({ ...formData, role: value })}
             disabled={loading}
           >
             <SelectTrigger>

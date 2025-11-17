@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Conversation } from "../../domain/entities/Conversation";
 import {
@@ -15,14 +15,8 @@ export function useConversations() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    if (session) {
-      loadConversations();
-    }
-  }, [session]);
-
-  const loadConversations = async () => {
-    if (!session) return;
+  const loadConversations = useCallback(async () => {
+    if (!session) throw new Error("No session");
 
     try {
       setLoading(true);
@@ -34,10 +28,16 @@ export function useConversations() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    if (session) {
+      loadConversations();
+    }
+  }, [session, loadConversations]);
 
   const search = async (query: string) => {
-    if (!session) return;
+    if (!session) throw new Error("No session");
 
     try {
       setLoading(true);
@@ -52,7 +52,7 @@ export function useConversations() {
   };
 
   const getUnassigned = async () => {
-    if (!session) return;
+    if (!session) throw new Error("No session");
 
     try {
       setLoading(true);

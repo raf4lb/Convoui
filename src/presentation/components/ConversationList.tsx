@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Search } from "lucide-react";
 
@@ -20,10 +20,6 @@ export function ConversationList({
   const { conversations, loading, reload, search, getUnassigned } = useConversations();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<TabType>("unassigned");
-
-  useEffect(() => {
-    handleTabChange("unassigned");
-  }, []);
 
   const handleTabChange = async (tab: TabType) => {
     setActiveTab(tab);

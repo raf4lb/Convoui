@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Message } from "../../domain/entities/Message";
 import {
@@ -12,13 +12,7 @@ export function useConversationMessages(conversationId: string | null) {
   const [error, setError] = useState<Error | null>(null);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
 
-  useEffect(() => {
-    if (conversationId) {
-      loadMessages();
-    }
-  }, [conversationId]);
-
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     if (!conversationId) return;
 
     try {
@@ -31,7 +25,13 @@ export function useConversationMessages(conversationId: string | null) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [conversationId]);
+
+  useEffect(() => {
+    if (conversationId) {
+      loadMessages();
+    }
+  }, [conversationId, loadMessages]);
 
   const sendMessage = async (text: string, attendantName: string) => {
     if (!conversationId) return;

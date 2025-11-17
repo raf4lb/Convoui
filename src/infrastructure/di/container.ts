@@ -20,18 +20,12 @@ import { GetConversationMessages } from "../../domain/use-cases/GetConversationM
 import { GetConversations } from "../../domain/use-cases/GetConversations";
 import { GetDashboardMetrics } from "../../domain/use-cases/GetDashboardMetrics";
 import { SendMessage } from "../../domain/use-cases/SendMessage";
-
-// Auth Use Cases
-
-// User Use Cases
 import { CheckPermission } from "../../domain/use-cases/user/CheckPermission";
 import { CreateUser } from "../../domain/use-cases/user/CreateUser";
 import { DeleteUser } from "../../domain/use-cases/user/DeleteUser";
 import { GetUsersByCompany } from "../../domain/use-cases/user/GetUsersByCompany";
 import { SearchUsers } from "../../domain/use-cases/user/SearchUsers";
 import { UpdateUser } from "../../domain/use-cases/user/UpdateUser";
-
-// Customer Use Cases
 
 // Repositories (Singleton instances)
 const conversationRepository = new ConversationRepository();
@@ -76,4 +70,4 @@ export const searchCustomersUseCase = new SearchCustomers(customerRepository);
 export const createCustomerUseCase = new CreateCustomer(customerRepository);
 
 // Metrics Repository (direct access for complex queries)
-export { metricsRepository, attendantStatsRepository };
+export { attendantStatsRepository, metricsRepository };
