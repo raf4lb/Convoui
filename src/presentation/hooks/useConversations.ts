@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Conversation } from "../../domain/entities/Conversation";
 import {
-  getConversationsUseCase,
-  searchConversationsUseCase,
-  getUnassignedConversationsUseCase,
   assignConversationToAttendantUseCase,
+  getConversationsUseCase,
+  getUnassignedConversationsUseCase,
+  searchConversationsUseCase,
 } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -26,7 +26,7 @@ export function useConversations() {
 
     try {
       setLoading(true);
-      const data = await getConversationsUseCase.execute(session.company.id);
+      const data = await getConversationsUseCase.execute(session.user);
       setConversations(data);
       setError(null);
     } catch (err) {

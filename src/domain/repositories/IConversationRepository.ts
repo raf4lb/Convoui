@@ -1,9 +1,11 @@
 import { Conversation } from "../entities/Conversation";
 import { Message } from "../entities/Message";
+import { UserWithoutPassword } from "../entities/User";
 
 export interface IConversationRepository {
   getAll(companyId: string): Promise<Conversation[]>;
   getById(id: string): Promise<Conversation | null>;
+  getByAttendant(user: UserWithoutPassword): Promise<Conversation[]>;
   getMessages(conversationId: string): Promise<Message[]>;
   assignAttendant(
     conversationId: string,

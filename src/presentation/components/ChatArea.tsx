@@ -25,11 +25,15 @@ interface ChatAreaProps {
 }
 
 export function ChatArea({ conversationId }: ChatAreaProps) {
-  const { hasPermission } = useAuth();
-  const { messages, loading } = useConversationMessages(conversationId);
+  const { session, hasPermission } = useAuth();
+  const { messages, loading, isSendingMessage, sendMessage } =
+    useConversationMessages(conversationId);
   const { conversations, assignAttendant } = useConversations();
   const { users } = useUsers();
   const [openAssignPopover, setOpenAssignPopover] = useState(false);
+  const [messageText, setMessageText] = useState("");
+
+  if (!session) return null;
 
   const currentConversation = conversations.find((c) => c.id === conversationId);
 
@@ -43,6 +47,12 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
       await assignAttendant(conversationId, userId, userName);
       setOpenAssignPopover(false);
     }
+  };
+
+  const handleSendMessage = async () => {
+    if (!conversationId) return;
+    await sendMessage(messageText, session.user.name);
+    setMessageText("");
   };
 
   if (!conversationId) {
@@ -182,13 +192,24 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
             <Paperclip className="w-5 h-5" />
           </Button>
 
-          <Input placeholder="Digite sua mensagem..." className="flex-1 border-neutral-200" />
+          <Input
+            placeholder="Digite sua mensagem..."
+            className="flex-1 border-neutral-200"
+            value={messageText}
+            onChange={(e) => setMessageText(e.target.value)}
+            disabled={isSendingMessage}
+          />
 
           <Button variant="ghost" size="icon" className="flex-shrink-0">
             <Smile className="w-5 h-5" />
           </Button>
 
-          <Button size="icon" className="flex-shrink-0 bg-emerald-500 hover:bg-emerald-600">
+          <Button
+            size="icon"
+            className="flex-shrink-0 bg-emerald-500 hover:bg-emerald-600"
+            onClick={handleSendMessage}
+            disabled={isSendingMessage}
+          >
             <Send className="w-5 h-5" />
           </Button>
         </div>

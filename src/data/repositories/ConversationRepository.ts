@@ -1,5 +1,6 @@
 import { Conversation } from "../../domain/entities/Conversation";
 import { Message } from "../../domain/entities/Message";
+import { UserWithoutPassword } from "../../domain/entities/User";
 import { IConversationRepository } from "../../domain/repositories/IConversationRepository";
 
 const mockConversations: Conversation[] = [
@@ -244,6 +245,15 @@ export class ConversationRepository implements IConversationRepository {
   async getById(id: string): Promise<Conversation | null> {
     const conversation = this.conversations.find((c) => c.id === id);
     return Promise.resolve(conversation || null);
+  }
+
+  async getByAttendant(user: UserWithoutPassword): Promise<Conversation[]> {
+    const conversations = this.conversations.filter(
+      (c) =>
+        c.companyId === user.companyId &&
+        (c.assignedToUserId == user.id || c.assignedToUserId == null),
+    );
+    return Promise.resolve([...conversations]);
   }
 
   async getMessages(conversationId: string): Promise<Message[]> {
