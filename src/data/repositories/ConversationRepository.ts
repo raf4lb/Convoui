@@ -1,4 +1,4 @@
-import { Conversation } from "../../domain/entities/Conversation";
+import { Conversation, ConversationStatus } from "../../domain/entities/Conversation";
 import { Message } from "../../domain/entities/Message";
 import { UserWithoutPassword } from "../../domain/entities/User";
 import { IConversationRepository } from "../../domain/repositories/IConversationRepository";
@@ -15,7 +15,7 @@ const mockConversations: Conversation[] = [
     unread: 2,
     assignedToUserId: "2",
     assignedToUserName: "João Silva",
-    status: "active",
+    status: ConversationStatus.PENDING,
     createdAt: new Date("2024-11-12T10:00:00"),
     updatedAt: new Date("2024-11-12T10:30:00"),
   },
@@ -30,7 +30,7 @@ const mockConversations: Conversation[] = [
     unread: 0,
     assignedToUserId: "3",
     assignedToUserName: "Ana Costa",
-    status: "active",
+    status: ConversationStatus.ACTIVE,
     createdAt: new Date("2024-11-12T09:00:00"),
     updatedAt: new Date("2024-11-12T09:15:00"),
   },
@@ -45,7 +45,7 @@ const mockConversations: Conversation[] = [
     unread: 1,
     assignedToUserId: null,
     assignedToUserName: null,
-    status: "pending",
+    status: ConversationStatus.PENDING,
     createdAt: new Date("2024-11-11T14:00:00"),
     updatedAt: new Date("2024-11-11T14:20:00"),
   },
@@ -60,7 +60,7 @@ const mockConversations: Conversation[] = [
     unread: 0,
     assignedToUserId: "2",
     assignedToUserName: "João Silva",
-    status: "resolved",
+    status: ConversationStatus.RESOLVED,
     createdAt: new Date("2024-11-11T16:00:00"),
     updatedAt: new Date("2024-11-11T16:45:00"),
   },
@@ -75,7 +75,7 @@ const mockConversations: Conversation[] = [
     unread: 3,
     assignedToUserId: null,
     assignedToUserName: null,
-    status: "pending",
+    status: ConversationStatus.PENDING,
     createdAt: new Date("2024-11-12T11:30:00"),
     updatedAt: new Date("2024-11-12T11:45:00"),
   },
@@ -250,8 +250,7 @@ export class ConversationRepository implements IConversationRepository {
   async getByAttendant(user: UserWithoutPassword): Promise<Conversation[]> {
     const conversations = this.conversations.filter(
       (c) =>
-        c.companyId === user.companyId &&
-        (c.assignedToUserId == user.id || c.assignedToUserId == null),
+        c.companyId === user.companyId && c.assignedToUserId == user.id
     );
     return Promise.resolve([...conversations]);
   }

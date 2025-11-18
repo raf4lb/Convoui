@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 
 import { Badge } from "../../components/ui/badge";
 import { Input } from "../../components/ui/input";
+import { ConversationStatus } from "../../domain/entities/Conversation";
 import { useConversations } from "../hooks/useConversations";
 
 interface ConversationListProps {
@@ -11,7 +12,12 @@ interface ConversationListProps {
   onSelectConversation: (id: string) => void;
 }
 
-type TabType = "unassigned" | "all" | "pending" | "resolved";
+enum TabType {
+  ALL = "all",
+  PENDING = "pending",
+  RESOLVED = "resolved",
+  UNASSIGNED = "unassigned",
+}
 
 export function ConversationList({
   selectedConversation,
@@ -19,18 +25,15 @@ export function ConversationList({
 }: ConversationListProps) {
   const { conversations, loading, reload, search, getUnassigned } = useConversations();
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<TabType>("unassigned");
+  const [activeTab, setActiveTab] = useState<TabType>(TabType.UNASSIGNED);
 
   const handleTabChange = async (tab: TabType) => {
     setActiveTab(tab);
-    setSearchQuery("");
 
-    if (tab === "unassigned") {
+    if (tab === TabType.UNASSIGNED) {
       await getUnassigned();
-    } else if (tab === "all") {
-      await reload();
     } else {
-      await reload();
+      reload();
     }
   };
 
@@ -39,16 +42,16 @@ export function ConversationList({
     if (query.trim()) {
       await search(query);
     } else {
-      handleTabChange(activeTab);
+      await reload();
     }
   };
 
   const filteredConversations = conversations.filter((conv) => {
     if (searchQuery.trim()) return true; // Already filtered by search
 
-    if (activeTab === "unassigned") return conv.assignedToUserId === null;
-    if (activeTab === "pending") return conv.status === "pending";
-    if (activeTab === "resolved") return conv.status === "resolved";
+    if (activeTab === TabType.UNASSIGNED) return conv.assignedToUserId === null;
+    if (activeTab === TabType.PENDING) return conv.unread > 0;
+    if (activeTab === TabType.RESOLVED) return conv.status === ConversationStatus.RESOLVED;
     return true; // 'all'
   });
 
@@ -73,14 +76,17 @@ export function ConversationList({
             placeholder="Buscar conversas..."
             className="pl-9 bg-neutral-50 border-0"
             value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              handleSearch(e.target.value);
+            }}
           />
         </div>
 
         {/* Filter Tabs */}
         <div className="flex gap-2 overflow-x-auto">
           <button
-            onClick={() => handleTabChange("unassigned")}
+            onClick={() => handleTabChange(TabType.UNASSIGNED)}
             className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
               activeTab === "unassigned"
                 ? "bg-amber-50 text-amber-600"
@@ -90,19 +96,9 @@ export function ConversationList({
             Não atribuídas
           </button>
           <button
-            onClick={() => handleTabChange("all")}
+            onClick={() => handleTabChange(TabType.PENDING)}
             className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
-              activeTab === "all"
-                ? "bg-emerald-50 text-emerald-600"
-                : "text-neutral-600 hover:bg-neutral-50"
-            }`}
-          >
-            Todas
-          </button>
-          <button
-            onClick={() => handleTabChange("pending")}
-            className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
-              activeTab === "pending"
+              activeTab === TabType.PENDING
                 ? "bg-emerald-50 text-emerald-600"
                 : "text-neutral-600 hover:bg-neutral-50"
             }`}
@@ -110,9 +106,19 @@ export function ConversationList({
             Pendentes
           </button>
           <button
-            onClick={() => handleTabChange("resolved")}
+            onClick={() => handleTabChange(TabType.ALL)}
             className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
-              activeTab === "resolved"
+              activeTab === TabType.ALL
+                ? "bg-emerald-50 text-emerald-600"
+                : "text-neutral-600 hover:bg-neutral-50"
+            }`}
+          >
+            Todas
+          </button>
+          <button
+            onClick={() => handleTabChange(TabType.RESOLVED)}
+            className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
+              activeTab === TabType.RESOLVED
                 ? "bg-emerald-50 text-emerald-600"
                 : "text-neutral-600 hover:bg-neutral-50"
             }`}

@@ -1,3 +1,9 @@
+export enum ConversationStatus {
+  ACTIVE = "active",
+  PENDING = "pending",
+  RESOLVED = "resolved",
+}
+
 export interface Conversation {
   id: string;
   companyId: string;
@@ -9,7 +15,7 @@ export interface Conversation {
   unread: number;
   assignedToUserId: string | null;
   assignedToUserName: string | null;
-  status: "active" | "pending" | "resolved";
+  status: ConversationStatus;
   createdAt: Date;
   updatedAt: Date;
 }
