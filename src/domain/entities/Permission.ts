@@ -28,6 +28,9 @@ export enum Permission {
   VIEW_DASHBOARD = "VIEW_DASHBOARD",
   VIEW_ALL_METRICS = "VIEW_ALL_METRICS",
   VIEW_OWN_METRICS = "VIEW_OWN_METRICS",
+
+  // Settings
+  VIEW_SETTINGS = "VIEW_SETTINGS",
 }
 
 export const RolePermissions: Record<UserRole, Permission[]> = {
@@ -50,6 +53,7 @@ export const RolePermissions: Record<UserRole, Permission[]> = {
     Permission.VIEW_COMPANY,
     Permission.VIEW_DASHBOARD,
     Permission.VIEW_ALL_METRICS,
+    Permission.VIEW_SETTINGS,
   ],
   [UserRole.MANAGER]: [
     Permission.CREATE_ATTENDANT,

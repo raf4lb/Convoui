@@ -1,5 +1,6 @@
-import { BarChart3, LogOut, MessageSquare, Settings, UserCog, UsersRound } from "lucide-react";
+import { BarChart3, LogOut, MessageSquare, Phone, Settings, User, UsersRound } from "lucide-react";
 
+import { View } from "../../App";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
 import {
   DropdownMenu,
@@ -13,8 +14,8 @@ import { Permission } from "../../domain/entities/Permission";
 import { useAuth } from "../contexts/AuthContext";
 
 interface SidebarProps {
-  selectedView: "conversations" | "customers" | "dashboard" | "users";
-  onViewChange: (view: "conversations" | "customers" | "dashboard" | "users") => void;
+  selectedView: View;
+  onViewChange: (view: View) => void;
 }
 
 export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
@@ -24,24 +25,35 @@ export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
 
   const menuItems = [
     {
-      id: "dashboard" as const,
+      id: View.DASHBOARD,
       icon: BarChart3,
       label: "Dashboard",
       permission: Permission.VIEW_DASHBOARD,
     },
     {
-      id: "conversations" as const,
+      id: View.CONVERSATIONS,
       icon: MessageSquare,
       label: "Conversas",
       permission: Permission.VIEW_CONVERSATIONS,
     },
     {
-      id: "customers" as const,
-      icon: UsersRound,
+      id: View.CUSTOMERS,
+      icon: Phone,
       label: "Clientes",
       permission: Permission.VIEW_CUSTOMERS,
     },
-    { id: "users" as const, icon: UserCog, label: "Usuários", permission: Permission.VIEW_USERS },
+    {
+      id: View.USERS,
+      icon: UsersRound,
+      label: "Usuários",
+      permission: Permission.VIEW_USERS,
+    },
+    {
+      id: View.SETTINGS,
+      icon: Settings,
+      label: "Configurações",
+      permission: Permission.VIEW_SETTINGS,
+    },
   ].filter((item) => hasPermission(item.permission));
 
   return (
@@ -97,9 +109,9 @@ export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => onViewChange("users")}>
-            <Settings className="w-4 h-4 mr-2" />
-            Configurações
+          <DropdownMenuItem onClick={() => onViewChange(View.PROFILE)}>
+            <User className="w-4 h-4 mr-2" />
+            Profile
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout} className="text-red-600">

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 
 import { Conversation } from "../../domain/entities/Conversation";
 import {
@@ -8,6 +8,21 @@ import {
   searchConversationsUseCase,
 } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
+
+export interface ConversationsHook {
+  conversations: Conversation[];
+  setConversations: Dispatch<SetStateAction<Conversation[]>>;
+  loading: boolean;
+  error: Error | null;
+  reload: () => Promise<void>;
+  search: (query: string) => Promise<void>;
+  getUnassigned: () => Promise<void>;
+  assignAttendant: (
+    conversationId: string,
+    userId: string | null,
+    userName: string | null,
+  ) => Promise<void>;
+}
 
 export function useConversations() {
   const { session } = useAuth();
@@ -74,8 +89,8 @@ export function useConversations() {
     await assignConversationToAttendantUseCase.execute(conversationId, userId, userName);
 
     // Update local state
-    setConversations(
-      conversations.map((conv) =>
+    setConversations((prev) =>
+      prev.map((conv) =>
         conv.id === conversationId
           ? { ...conv, assignedToUserId: userId, assignedToUserName: userName }
           : conv,
@@ -85,6 +100,7 @@ export function useConversations() {
 
   return {
     conversations,
+    setConversations,
     loading,
     error,
     reload: loadConversations,

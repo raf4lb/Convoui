@@ -74,8 +74,8 @@ export function UserFormDialog({
     try {
       await onSubmit(formData);
       setOpen(false);
-    } catch (err: any) {
-      setError(err.message || "Erro ao salvar usuário");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Erro ao salvar usuário");
     } finally {
       setLoading(false);
     }
@@ -89,15 +89,6 @@ export function UserFormDialog({
         setError(null);
       }}
     >
-      {/* {!isEdit && (
-        <DialogTrigger asChild>
-          <Button className="bg-emerald-500 hover:bg-emerald-600 gap-2">
-            <Plus className="w-4 h-4" />
-            Novo Usuário
-          </Button>
-        </DialogTrigger>
-      )} */}
-
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{isEdit ? "Editar Usuário" : "Criar Novo Usuário"}</DialogTitle>

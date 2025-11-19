@@ -108,7 +108,7 @@ export class UserRepository implements IUserRepository {
   }
 
   private removePassword(user: User): UserWithoutPassword {
-    const { password, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 }

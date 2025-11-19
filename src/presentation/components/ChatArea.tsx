@@ -17,25 +17,25 @@ import { Permission } from "../../domain/entities/Permission";
 import { UserRole } from "../../domain/entities/User";
 import { useAuth } from "../contexts/AuthContext";
 import { useConversationMessages } from "../hooks/useConversationMessages";
-import { useConversations } from "../hooks/useConversations";
+import { ConversationsHook } from "../hooks/useConversations";
 import { useUsers } from "../hooks/useUsers";
 
 interface ChatAreaProps {
   conversationId: string | null;
+  conversationsHook: ConversationsHook;
 }
 
-export function ChatArea({ conversationId }: ChatAreaProps) {
+export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
   const { session, hasPermission } = useAuth();
   const { messages, loading, isSendingMessage, sendMessage } =
     useConversationMessages(conversationId);
-  const { conversations, assignAttendant } = useConversations();
   const { users } = useUsers();
   const [openAssignPopover, setOpenAssignPopover] = useState(false);
   const [messageText, setMessageText] = useState("");
 
   if (!session) return null;
 
-  const currentConversation = conversations.find((c) => c.id === conversationId);
+  const currentConversation = conversationsHook.conversations.find((c) => c.id === conversationId);
 
   const canAssingConversation = hasPermission(Permission.ASSIGN_CONVERSATION);
 
@@ -44,7 +44,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
 
   const handleAssignAttendant = async (userId: string | null, userName: string | null) => {
     if (conversationId) {
-      await assignAttendant(conversationId, userId, userName);
+      await conversationsHook.assignAttendant(conversationId, userId, userName);
       setOpenAssignPopover(false);
     }
   };
@@ -52,6 +52,11 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
   const handleSendMessage = async () => {
     if (!conversationId) return;
     await sendMessage(messageText, session.user.name);
+    conversationsHook.setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === conversationId ? { ...conv, lastMessage: messageText } : conv,
+      ),
+    );
     setMessageText("");
   };
 

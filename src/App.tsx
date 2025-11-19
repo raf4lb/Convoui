@@ -1,20 +1,26 @@
 import { useState } from "react";
 
-import { ChatArea } from "./presentation/components/ChatArea";
-import { ConversationList } from "./presentation/components/ConversationList";
+import { Chat } from "./presentation/components/Chat";
 import { CustomerManagement } from "./presentation/components/CustomerManagement";
 import { Dashboard } from "./presentation/components/Dashboard";
 import { Login } from "./presentation/components/Login";
+import { Settings } from "./presentation/components/Settings";
 import { Sidebar } from "./presentation/components/Sidebar";
 import { UserManagement } from "./presentation/components/UserManagement";
 import { AuthProvider, useAuth } from "./presentation/contexts/AuthContext";
 
+export enum View {
+  CONVERSATIONS = "conversations",
+  CUSTOMERS = "customers",
+  DASHBOARD = "dashboard",
+  USERS = "users",
+  SETTINGS = "settings",
+  PROFILE = "profile",
+}
+
 function AppContent() {
   const { session, loading } = useAuth();
-  const [selectedView, setSelectedView] = useState<
-    "conversations" | "customers" | "dashboard" | "users"
-  >("dashboard");
-  const [selectedConversation, setSelectedConversation] = useState<string | null>("1");
+  const [selectedView, setSelectedView] = useState<View>(View.DASHBOARD);
 
   if (loading) {
     return (
@@ -35,23 +41,16 @@ function AppContent() {
 
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
-        {selectedView === "conversations" ? (
-          <>
-            {/* Conversation List */}
-            <ConversationList
-              selectedConversation={selectedConversation}
-              onSelectConversation={setSelectedConversation}
-            />
-
-            {/* Chat Area */}
-            <ChatArea conversationId={selectedConversation} />
-          </>
-        ) : selectedView === "customers" ? (
-          <CustomerManagement />
-        ) : selectedView === "users" ? (
-          <UserManagement />
-        ) : (
+        {selectedView === View.DASHBOARD ? (
           <Dashboard />
+        ) : selectedView === View.CUSTOMERS ? (
+          <CustomerManagement />
+        ) : selectedView === View.USERS ? (
+          <UserManagement />
+        ) : selectedView === View.SETTINGS ? (
+          <Settings />
+        ) : (
+          <Chat />
         )}
       </div>
     </div>

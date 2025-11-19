@@ -5,11 +5,12 @@ import { Search } from "lucide-react";
 import { Badge } from "../../components/ui/badge";
 import { Input } from "../../components/ui/input";
 import { ConversationStatus } from "../../domain/entities/Conversation";
-import { useConversations } from "../hooks/useConversations";
+import { ConversationsHook } from "../hooks/useConversations";
 
 interface ConversationListProps {
   selectedConversation: string | null;
   onSelectConversation: (id: string) => void;
+  conversationsHook: ConversationsHook;
 }
 
 enum TabType {
@@ -22,8 +23,8 @@ enum TabType {
 export function ConversationList({
   selectedConversation,
   onSelectConversation,
+  conversationsHook,
 }: ConversationListProps) {
-  const { conversations, loading, reload, search, getUnassigned } = useConversations();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<TabType>(TabType.UNASSIGNED);
 
@@ -31,22 +32,22 @@ export function ConversationList({
     setActiveTab(tab);
 
     if (tab === TabType.UNASSIGNED) {
-      await getUnassigned();
+      await conversationsHook.getUnassigned();
     } else {
-      reload();
+      conversationsHook.reload();
     }
   };
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
-      await search(query);
+      await conversationsHook.search(query);
     } else {
-      await reload();
+      await conversationsHook.reload();
     }
   };
 
-  const filteredConversations = conversations.filter((conv) => {
+  const filteredConversations = conversationsHook.conversations.filter((conv) => {
     if (searchQuery.trim()) return true; // Already filtered by search
 
     if (activeTab === TabType.UNASSIGNED) return conv.assignedToUserId === null;
@@ -55,7 +56,7 @@ export function ConversationList({
     return true; // 'all'
   });
 
-  if (loading) {
+  if (conversationsHook.loading) {
     return (
       <div className="w-96 bg-white border-r border-neutral-200 flex items-center justify-center">
         <p className="text-neutral-500">Carregando...</p>

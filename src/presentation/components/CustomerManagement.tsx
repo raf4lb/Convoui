@@ -117,7 +117,9 @@ export function CustomerManagement() {
                 )}
 
                 <div className="space-y-2">
-                  <label className="text-sm text-neutral-700">Nome *</label>
+                  <label htmlFor="customer-name" className="text-sm text-neutral-700">
+                    Nome *
+                  </label>
                   <Input
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -128,7 +130,9 @@ export function CustomerManagement() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm text-neutral-700">Telefone *</label>
+                  <label htmlFor="customer-phone" className="text-sm text-neutral-700">
+                    Telefone *
+                  </label>
                   <Input
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -139,7 +143,9 @@ export function CustomerManagement() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm text-neutral-700">Email</label>
+                  <label htmlFor="customer-email" className="text-sm text-neutral-700">
+                    Email
+                  </label>
                   <Input
                     type="email"
                     value={formData.email}
@@ -150,7 +156,9 @@ export function CustomerManagement() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm text-neutral-700">Tags</label>
+                  <label htmlFor="customer-tags" className="text-sm text-neutral-700">
+                    Tags
+                  </label>
                   <Input
                     value={formData.tags}
                     onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
@@ -160,7 +168,9 @@ export function CustomerManagement() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm text-neutral-700">Observações</label>
+                  <label htmlFor="customer-notes" className="text-sm text-neutral-700">
+                    Observações
+                  </label>
                   <Textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}

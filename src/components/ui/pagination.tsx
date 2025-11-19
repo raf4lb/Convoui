@@ -50,7 +50,9 @@ function PaginationLink({ className, isActive, size = "icon", ...props }: Pagina
         className,
       )}
       {...props}
-    />
+    >
+      {props.children}
+    </a>
   );
 }
 

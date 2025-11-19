@@ -249,8 +249,7 @@ export class ConversationRepository implements IConversationRepository {
 
   async getByAttendant(user: UserWithoutPassword): Promise<Conversation[]> {
     const conversations = this.conversations.filter(
-      (c) =>
-        c.companyId === user.companyId && c.assignedToUserId == user.id
+      (c) => c.companyId === user.companyId && c.assignedToUserId == user.id,
     );
     return Promise.resolve([...conversations]);
   }
