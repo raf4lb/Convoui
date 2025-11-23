@@ -1,6 +1,6 @@
-import { Conversation } from "../entities/Conversation";
-import { UserRole, UserWithoutPassword } from "../entities/User";
-import { IConversationRepository } from "../repositories/IConversationRepository";
+import { Conversation } from "../../entities/Conversation";
+import { UserRole, UserWithoutPassword } from "../../entities/User";
+import { IConversationRepository } from "../../repositories/IConversationRepository";
 
 export class GetConversations {
   constructor(private conversationRepository: IConversationRepository) {}

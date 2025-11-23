@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Check, MoreVertical, Paperclip, Send, Smile, User } from "lucide-react";
+import { Check, Headset, MoreVertical, Paperclip, Send, Smile, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
 import { Button } from "../../components/ui/button";
@@ -60,6 +60,80 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
     setMessageText("");
   };
 
+  const buildAssignButton = () => {
+    if (canAssingConversation) {
+      return (
+        <Popover open={openAssignPopover} onOpenChange={setOpenAssignPopover}>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="sm" className="gap-2">
+              <User className="w-4 h-4" />
+              {currentConversation?.assignedToUserName || "Atribuir"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="p-0" align="end">
+            <Command>
+              <CommandInput placeholder="Buscar atendente..." />
+              <CommandEmpty>Nenhum atendente encontrado.</CommandEmpty>
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => handleAssignAttendant(null, null)}
+                  className="cursor-pointer"
+                >
+                  <Check
+                    className={`mr-2 h-4 w-4 ${
+                      !currentConversation?.assignedToUserId ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                  Não atribuído
+                </CommandItem>
+                {attendants.map((attendant) => (
+                  <CommandItem
+                    key={attendant.id}
+                    value={attendant.name}
+                    onSelect={() => handleAssignAttendant(attendant.id, attendant.name)}
+                    className="cursor-pointer"
+                  >
+                    <Check
+                      className={`mr-2 h-4 w-4 ${
+                        currentConversation?.assignedToUserId === attendant.id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      }`}
+                    />
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs">
+                        {attendant.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .substring(0, 2)}
+                      </div>
+                      <div>
+                        <p className="text-sm">{attendant.name}</p>
+                        <p className="text-xs text-neutral-500">{attendant.email}</p>
+                      </div>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      );
+    } else if (!currentConversation?.assignedToUserId && session.user.role === UserRole.ATTENDANT) {
+      return (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2"
+          onClick={() => handleAssignAttendant(session.user.id, session.user.name)}
+        >
+          <Headset className="w-4 h-4" /> Atender
+        </Button>
+      );
+    }
+  };
+
   if (!conversationId) {
     return (
       <div className="flex-1 flex items-center justify-center bg-neutral-50">
@@ -96,64 +170,7 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {canAssingConversation && (
-            <Popover open={openAssignPopover} onOpenChange={setOpenAssignPopover}>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <User className="w-4 h-4" />
-                  {currentConversation?.assignedToUserName || "Atribuir"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="p-0" align="end">
-                <Command>
-                  <CommandInput placeholder="Buscar atendente..." />
-                  <CommandEmpty>Nenhum atendente encontrado.</CommandEmpty>
-                  <CommandGroup>
-                    <CommandItem
-                      onSelect={() => handleAssignAttendant(null, null)}
-                      className="cursor-pointer"
-                    >
-                      <Check
-                        className={`mr-2 h-4 w-4 ${
-                          !currentConversation?.assignedToUserId ? "opacity-100" : "opacity-0"
-                        }`}
-                      />
-                      Não atribuído
-                    </CommandItem>
-                    {attendants.map((attendant) => (
-                      <CommandItem
-                        key={attendant.id}
-                        value={attendant.name}
-                        onSelect={() => handleAssignAttendant(attendant.id, attendant.name)}
-                        className="cursor-pointer"
-                      >
-                        <Check
-                          className={`mr-2 h-4 w-4 ${
-                            currentConversation?.assignedToUserId === attendant.id
-                              ? "opacity-100"
-                              : "opacity-0"
-                          }`}
-                        />
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs">
-                            {attendant.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .substring(0, 2)}
-                          </div>
-                          <div>
-                            <p className="text-sm">{attendant.name}</p>
-                            <p className="text-xs text-neutral-500">{attendant.email}</p>
-                          </div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          )}
+          {buildAssignButton()}
           <Button variant="ghost" size="icon">
             <MoreVertical className="w-5 h-5" />
           </Button>

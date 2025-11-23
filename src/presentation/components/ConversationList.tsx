@@ -1,10 +1,12 @@
 import { useState } from "react";
 
-import { Search } from "lucide-react";
+import { Headset, Search } from "lucide-react";
 
 import { Badge } from "../../components/ui/badge";
 import { Input } from "../../components/ui/input";
 import { ConversationStatus } from "../../domain/entities/Conversation";
+import { UserRole } from "../../domain/entities/User";
+import { useAuth } from "../contexts/AuthContext";
 import { ConversationsHook } from "../hooks/useConversations";
 
 interface ConversationListProps {
@@ -25,17 +27,15 @@ export function ConversationList({
   onSelectConversation,
   conversationsHook,
 }: ConversationListProps) {
+  const { session } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<TabType>(TabType.UNASSIGNED);
 
+  if (!session) return null;
+
   const handleTabChange = async (tab: TabType) => {
     setActiveTab(tab);
-
-    if (tab === TabType.UNASSIGNED) {
-      await conversationsHook.getUnassigned();
-    } else {
-      conversationsHook.reload();
-    }
+    await conversationsHook.reload();
   };
 
   const handleSearch = async (query: string) => {
@@ -51,7 +51,7 @@ export function ConversationList({
     if (searchQuery.trim()) return true; // Already filtered by search
 
     if (activeTab === TabType.UNASSIGNED) return conv.assignedToUserId === null;
-    if (activeTab === TabType.PENDING) return conv.unread > 0;
+    if (activeTab === TabType.PENDING) return conv.unread > 0 && conv.assignedToUserId !== null;
     if (activeTab === TabType.RESOLVED) return conv.status === ConversationStatus.RESOLVED;
     return true; // 'all'
   });
@@ -163,31 +163,38 @@ export function ConversationList({
                         {conversation.time}
                       </span>
                     </div>
-
-                    <p className="text-sm text-neutral-600 truncate mb-2">
-                      {conversation.lastMessage}
-                    </p>
-
                     <div className="flex items-center justify-between">
-                      {conversation.assignedToUserName ? (
-                        <span className="text-xs text-neutral-500">
-                          Atendente: {conversation.assignedToUserName}
-                        </span>
-                      ) : (
-                        <Badge
-                          variant="outline"
-                          className="text-xs border-amber-200 text-amber-700 bg-amber-50"
-                        >
-                          Não atribuído
-                        </Badge>
-                      )}
-
+                      <p className="text-sm text-neutral-600 truncate mb-2 mt-2">
+                        {conversation.lastMessage}
+                      </p>
                       {conversation.unread > 0 && (
                         <Badge className="bg-emerald-500 text-white text-xs h-5 min-w-5 rounded-full flex items-center justify-center">
                           {conversation.unread}
                         </Badge>
                       )}
                     </div>
+
+                    {session.user.role !== UserRole.ATTENDANT &&
+                      conversation.assignedToUserName && (
+                        <Badge
+                          variant="outline"
+                          className="bg-blue-50 text-blue-700 border-blue-200"
+                        >
+                          <span className="flex items-center gap-1">
+                            <Headset className="w-3 h-3" />
+                            {conversation.assignedToUserName}
+                          </span>
+                        </Badge>
+                      )}
+
+                    {!conversation.assignedToUserId && (
+                      <Badge
+                        variant="outline"
+                        className="text-xs border-amber-200 text-amber-700 bg-amber-50"
+                      >
+                        Não atribuído
+                      </Badge>
+                    )}
                   </div>
                 </div>
               </button>
