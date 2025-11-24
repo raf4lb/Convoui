@@ -40,10 +40,10 @@ export class AuthRepository implements IAuthRepository {
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24); // 24 hours
 
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _, ...authUser } = user;
 
     const session: AuthSession = {
-      user: userWithoutPassword,
+      user: authUser,
       company,
       token,
       expiresAt,

@@ -1,14 +1,10 @@
-import { UserWithoutPassword, UserRole } from "../../entities/User";
+import { AuthUser, UserRole } from "../../entities/User";
 import { IUserRepository } from "../../repositories/IUserRepository";
 
 export class SearchUsers {
   constructor(private userRepository: IUserRepository) {}
 
-  async execute(
-    companyId: string,
-    query: string,
-    roleFilter?: UserRole,
-  ): Promise<UserWithoutPassword[]> {
+  async execute(companyId: string, query: string, roleFilter?: UserRole): Promise<AuthUser[]> {
     let users = await this.userRepository.getByCompanyId(companyId);
 
     // Filter by search query

@@ -1,8 +1,8 @@
 import { Company } from "./Company";
-import { UserWithoutPassword } from "./User";
+import { AuthUser } from "./User";
 
 export interface AuthSession {
-  user: UserWithoutPassword;
+  user: AuthUser;
   company: Company;
   token: string;
   expiresAt: Date;

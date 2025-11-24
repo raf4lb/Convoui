@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { UserRole, UserWithoutPassword } from "../../domain/entities/User";
+import { AuthUser, UserRole } from "../../domain/entities/User";
 import {
   createUserUseCase,
   deleteUserUseCase,
@@ -12,7 +12,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 export function useUsers() {
   const { session } = useAuth();
-  const [users, setUsers] = useState<UserWithoutPassword[]>([]);
+  const [users, setUsers] = useState<AuthUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -71,7 +71,7 @@ export function useUsers() {
     return newUser;
   };
 
-  const updateUser = async (userId: string, updates: Partial<UserWithoutPassword>) => {
+  const updateUser = async (userId: string, updates: Partial<AuthUser>) => {
     if (!session) throw new Error("No session");
 
     const updatedUser = await updateUserUseCase.execute(userId, updates, session.user.role);

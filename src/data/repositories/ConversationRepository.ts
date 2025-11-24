@@ -1,6 +1,6 @@
 import { Conversation, ConversationStatus } from "../../domain/entities/Conversation";
 import { Message } from "../../domain/entities/Message";
-import { UserWithoutPassword } from "../../domain/entities/User";
+import { AuthUser } from "../../domain/entities/User";
 import { IConversationRepository } from "../../domain/repositories/IConversationRepository";
 
 const mockConversations: Conversation[] = [
@@ -242,12 +242,12 @@ export class ConversationRepository implements IConversationRepository {
     return Promise.resolve([...conversations]);
   }
 
-  async getById(id: string): Promise<Conversation | null> {
-    const conversation = this.conversations.find((c) => c.id === id);
+  async getById(companyId: string, id: string): Promise<Conversation | null> {
+    const conversation = this.conversations.find((c) => c.id === id && c.companyId == companyId);
     return Promise.resolve(conversation || null);
   }
 
-  async getByAttendant(user: UserWithoutPassword): Promise<Conversation[]> {
+  async getByAttendant(user: AuthUser): Promise<Conversation[]> {
     const conversations = this.conversations.filter(
       (c) =>
         c.companyId === user.companyId &&
@@ -290,11 +290,29 @@ export class ConversationRepository implements IConversationRepository {
     // Update conversation
     const conversation = this.conversations.find((c) => c.id === conversationId);
     if (conversation) {
+      conversation.unread = 0;
       conversation.lastMessage = message.text;
       conversation.updatedAt = new Date();
     }
 
     return Promise.resolve(newMessage);
+  }
+
+  async receiveMessage(conversationId: string, message: Message): Promise<Message> {
+    if (!this.messages[conversationId]) {
+      this.messages[conversationId] = [];
+    }
+
+    this.messages[conversationId].push(message);
+
+    // Update conversation
+    const conversation = this.conversations.find((c) => c.id === conversationId);
+    if (conversation) {
+      conversation.lastMessage = message.text;
+      conversation.unread++;
+      conversation.updatedAt = new Date();
+    }
+    return Promise.resolve(message);
   }
 
   async search(companyId: string, query: string): Promise<Conversation[]> {

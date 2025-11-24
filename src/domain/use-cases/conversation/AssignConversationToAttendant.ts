@@ -1,7 +1,12 @@
-import { IConversationRepository } from "../repositories/IConversationRepository";
+import { ConversationAssignedEvent } from "../../events/ConversationAssignedEvent";
+import { IEventBus } from "../../ports/EventBus";
+import { IConversationRepository } from "../../repositories/IConversationRepository";
 
 export class AssignConversationToAttendant {
-  constructor(private conversationRepository: IConversationRepository) {}
+  constructor(
+    private readonly conversationRepository: IConversationRepository,
+    private readonly eventBus: IEventBus,
+  ) {}
 
   async execute(
     conversationId: string,
@@ -9,5 +14,7 @@ export class AssignConversationToAttendant {
     userName: string | null,
   ): Promise<void> {
     await this.conversationRepository.assignAttendant(conversationId, userId, userName);
+    const event = new ConversationAssignedEvent({ conversationId, userId, userName });
+    this.eventBus.publish(event);
   }
 }

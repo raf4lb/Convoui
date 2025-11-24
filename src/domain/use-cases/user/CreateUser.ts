@@ -1,5 +1,5 @@
 import { Permission, RolePermissions } from "../../entities/Permission";
-import { UserRole, UserWithoutPassword } from "../../entities/User";
+import { AuthUser, UserRole } from "../../entities/User";
 import { IUserRepository } from "../../repositories/IUserRepository";
 
 export class CreateUser {
@@ -14,7 +14,7 @@ export class CreateUser {
       role: UserRole;
     },
     creatorRole: UserRole,
-  ): Promise<UserWithoutPassword> {
+  ): Promise<AuthUser> {
     // Validate permissions
     this.validatePermissions(data.role, creatorRole);
 

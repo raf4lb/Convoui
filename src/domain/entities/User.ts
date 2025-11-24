@@ -16,4 +16,4 @@ export interface User {
   lastLoginAt?: Date;
 }
 
-export type UserWithoutPassword = Omit<User, "password">;
+export type AuthUser = Omit<User, "password">;

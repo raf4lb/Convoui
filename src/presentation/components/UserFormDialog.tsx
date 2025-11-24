@@ -17,13 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { User, UserRole, UserWithoutPassword } from "../../domain/entities/User";
+import { AuthUser, User, UserRole } from "../../domain/entities/User";
 
 interface UserDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   onSubmit: (data: Partial<User>) => Promise<void>;
-  user?: UserWithoutPassword; // se vier preenchido, estamos editando
+  user?: AuthUser; // se vier preenchido, estamos editando
   canCreateAttendant?: boolean;
   canCreateManager?: boolean;
   canCreateAdmin?: boolean;

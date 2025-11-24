@@ -11,9 +11,10 @@ import { Login } from "../../domain/use-cases/auth/Login";
 import { Logout } from "../../domain/use-cases/auth/Logout";
 import { ValidateSession } from "../../domain/use-cases/auth/ValidateSession";
 import { AssignConversationToAttendant } from "../../domain/use-cases/conversation/AssignConversationToAttendant";
+import { GetConversation } from "../../domain/use-cases/conversation/GetConversation";
 import { GetConversationMessages } from "../../domain/use-cases/conversation/GetConversationMessages";
 import { GetConversations } from "../../domain/use-cases/conversation/GetConversations";
-import { GetUnassignedConversations } from "../../domain/use-cases/conversation/GetUnassignedConversations";
+import { ReceiveMessage } from "../../domain/use-cases/conversation/ReceiveMessage";
 import { SearchConversations } from "../../domain/use-cases/conversation/SearchConversations";
 import { SendMessage } from "../../domain/use-cases/conversation/SendMessage";
 import { CreateCustomer } from "../../domain/use-cases/customer/CreateCustomer";
@@ -26,6 +27,10 @@ import { DeleteUser } from "../../domain/use-cases/user/DeleteUser";
 import { GetUsersByCompany } from "../../domain/use-cases/user/GetUsersByCompany";
 import { SearchUsers } from "../../domain/use-cases/user/SearchUsers";
 import { UpdateUser } from "../../domain/use-cases/user/UpdateUser";
+import { InMemoryEventBus } from "../events/EventBus";
+
+// EventBus
+export const eventBus = new InMemoryEventBus();
 
 // Repositories (Singleton instances)
 const conversationRepository = new ConversationRepository();
@@ -37,16 +42,16 @@ const customerRepository = new CustomerRepository();
 const attendantStatsRepository = new AttendantStatsRepository();
 
 // Conversation Use Cases
+export const getConversationUseCase = new GetConversation(conversationRepository);
 export const getConversationsUseCase = new GetConversations(conversationRepository);
 export const getConversationMessagesUseCase = new GetConversationMessages(conversationRepository);
 export const assignConversationToAttendantUseCase = new AssignConversationToAttendant(
   conversationRepository,
+  eventBus,
 );
-export const sendMessageUseCase = new SendMessage(conversationRepository);
+export const sendMessageUseCase = new SendMessage(conversationRepository, eventBus);
+export const receiveMessageUseCase = new ReceiveMessage(conversationRepository, eventBus);
 export const searchConversationsUseCase = new SearchConversations(conversationRepository);
-export const getUnassignedConversationsUseCase = new GetUnassignedConversations(
-  conversationRepository,
-);
 
 // Metrics Use Cases
 export const getDashboardMetricsUseCase = new GetDashboardMetrics(metricsRepository);

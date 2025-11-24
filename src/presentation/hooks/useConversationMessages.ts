@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { Message } from "../../domain/entities/Message";
+import { EventType } from "../../domain/events/DomainEvent";
+import { MessageSentEvent } from "../../domain/events/MessageCreatedEvent";
+import { IEventBus } from "../../domain/ports/EventBus";
 import {
   getConversationMessagesUseCase,
   sendMessageUseCase,
 } from "../../infrastructure/di/container";
 
-export function useConversationMessages(conversationId: string | null) {
+export function useConversationMessages(conversationId: string | null, eventBus: IEventBus) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -27,23 +30,38 @@ export function useConversationMessages(conversationId: string | null) {
     }
   }, [conversationId]);
 
+  const onMessageSent = useCallback(
+    (messageConversationId: string, message: Message) => {
+      if (messageConversationId != conversationId) return;
+      setMessages((prev) => [...prev, message]);
+    },
+    [conversationId],
+  );
+
   useEffect(() => {
     if (conversationId) {
       loadMessages();
     }
-  }, [conversationId, loadMessages]);
+
+    const unsubscribe = eventBus.subscribe<MessageSentEvent>(EventType.MESSAGE_SENT, (event) => {
+      if (event.payload.conversationId != conversationId) return;
+      onMessageSent(event.payload.conversationId, event.payload.message);
+    });
+
+    return () => unsubscribe();
+  }, [conversationId, loadMessages, eventBus, onMessageSent]);
 
   const sendMessage = async (text: string, attendantName: string) => {
     if (!conversationId) return;
     try {
       setIsSendingMessage(true);
-      const newMessage = await sendMessageUseCase.execute(conversationId, {
+      await sendMessageUseCase.execute(conversationId, {
         text: text,
         timestamp: new Date().toISOString(),
         sender: "attendant",
         attendantName: attendantName,
       });
-      setMessages([...messages, newMessage]);
+      // setMessages([...messages, newMessage]);
       setError(null);
     } catch (err) {
       setError(err as Error);
@@ -52,5 +70,12 @@ export function useConversationMessages(conversationId: string | null) {
     }
   };
 
-  return { messages, loading, error, reload: loadMessages, isSendingMessage, sendMessage };
+  return {
+    messages,
+    loading,
+    error,
+    reload: loadMessages,
+    isSendingMessage,
+    sendMessage,
+  };
 }

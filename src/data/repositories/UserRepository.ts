@@ -1,4 +1,4 @@
-import { User, UserRole, UserWithoutPassword } from "../../domain/entities/User";
+import { AuthUser, User, UserRole } from "../../domain/entities/User";
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
 
 const mockUsers: User[] = [
@@ -67,12 +67,12 @@ export class UserRepository implements IUserRepository {
     return Promise.resolve(user || null);
   }
 
-  async getByCompanyId(companyId: string): Promise<UserWithoutPassword[]> {
+  async getByCompanyId(companyId: string): Promise<AuthUser[]> {
     const users = this.users.filter((u) => u.companyId === companyId).map(this.removePassword);
     return Promise.resolve(users);
   }
 
-  async create(data: Omit<User, "id" | "createdAt">): Promise<UserWithoutPassword> {
+  async create(data: Omit<User, "id" | "createdAt">): Promise<AuthUser> {
     const user: User = {
       ...data,
       id: Date.now().toString(),
@@ -82,7 +82,7 @@ export class UserRepository implements IUserRepository {
     return Promise.resolve(this.removePassword(user));
   }
 
-  async update(id: string, updates: Partial<User>): Promise<UserWithoutPassword> {
+  async update(id: string, updates: Partial<User>): Promise<AuthUser> {
     const index = this.users.findIndex((u) => u.id === id);
     if (index === -1) {
       throw new Error("User not found");
@@ -107,8 +107,8 @@ export class UserRepository implements IUserRepository {
     return Promise.resolve();
   }
 
-  private removePassword(user: User): UserWithoutPassword {
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+  private removePassword(user: User): AuthUser {
+    const { password: _, ...authUser } = user;
+    return authUser;
   }
 }

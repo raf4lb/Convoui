@@ -1,15 +1,11 @@
 import { Permission, RolePermissions } from "../../entities/Permission";
-import { User, UserRole, UserWithoutPassword } from "../../entities/User";
+import { AuthUser, User, UserRole } from "../../entities/User";
 import { IUserRepository } from "../../repositories/IUserRepository";
 
 export class UpdateUser {
   constructor(private userRepository: IUserRepository) {}
 
-  async execute(
-    userId: string,
-    updates: Partial<User>,
-    updaterRole: UserRole,
-  ): Promise<UserWithoutPassword> {
+  async execute(userId: string, updates: Partial<User>, updaterRole: UserRole): Promise<AuthUser> {
     // Get user to update
     const userToUpdate = await this.userRepository.getById(userId);
     if (!userToUpdate) {

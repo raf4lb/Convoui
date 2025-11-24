@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { Permission } from "../../domain/entities/Permission";
-import { User, UserRole, UserWithoutPassword } from "../../domain/entities/User";
+import { AuthUser, User, UserRole } from "../../domain/entities/User";
 import { useAuth } from "../contexts/AuthContext";
 import { useUsers } from "../hooks/useUsers";
 
@@ -42,7 +42,7 @@ export function UserManagement() {
   const { users, loading, search, createUser, updateUser, deleteUser } = useUsers();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserWithoutPassword | null>(null);
+  const [selectedUser, setSelectedUser] = useState<AuthUser | null>(null);
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all");

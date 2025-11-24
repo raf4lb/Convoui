@@ -2,9 +2,14 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "reac
 
 import { Conversation } from "../../domain/entities/Conversation";
 import {
-  assignConversationToAttendantUseCase,
+  ConversationAssignedEvent,
+  ConversationAssignedPayload,
+} from "../../domain/events/ConversationAssignedEvent";
+import { EventType } from "../../domain/events/DomainEvent";
+import { MessageSentEvent, MessageSentPayload } from "../../domain/events/MessageCreatedEvent";
+import { IEventBus } from "../../domain/ports/EventBus";
+import {
   getConversationsUseCase,
-  getUnassignedConversationsUseCase,
   searchConversationsUseCase,
 } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
@@ -24,7 +29,7 @@ export interface ConversationsHook {
   ) => Promise<void>;
 }
 
-export function useConversations() {
+export function useConversations(eventBus: IEventBus) {
   const { session } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,8 +53,27 @@ export function useConversations() {
   useEffect(() => {
     if (session) {
       loadConversations();
+
+      const unsubscribeMessageSentEvent = eventBus.subscribe<MessageSentEvent>(
+        EventType.MESSAGE_SENT,
+        async (event) => {
+          onMessageSent(event.payload);
+        },
+      );
+
+      const unsubscribeConversationAssignedEvent = eventBus.subscribe<ConversationAssignedEvent>(
+        EventType.CONVERSATION_ASSIGNED,
+        async (event) => {
+          onConversationAssigned(event.payload);
+        },
+      );
+
+      return () => {
+        unsubscribeMessageSentEvent();
+        unsubscribeConversationAssignedEvent();
+      };
     }
-  }, [session, loadConversations]);
+  }, [session, loadConversations, eventBus]);
 
   const search = async (query: string) => {
     if (!session) throw new Error("No session");
@@ -66,33 +90,25 @@ export function useConversations() {
     }
   };
 
-  const getUnassigned = async () => {
-    if (!session) throw new Error("No session");
-
-    try {
-      setLoading(true);
-      const data = await getUnassignedConversationsUseCase.execute(session.company.id);
-      setConversations(data);
-      setError(null);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const assignAttendant = async (
-    conversationId: string,
-    userId: string | null,
-    userName: string | null,
-  ) => {
-    await assignConversationToAttendantUseCase.execute(conversationId, userId, userName);
-
-    // Update local state
+  const onMessageSent = (payload: MessageSentPayload) => {
     setConversations((prev) =>
       prev.map((conv) =>
-        conv.id === conversationId
-          ? { ...conv, assignedToUserId: userId, assignedToUserName: userName }
+        conv.id === payload.conversationId
+          ? {
+              ...conv,
+              lastMessage: payload.message.text,
+              updatedAt: new Date(),
+            }
+          : conv,
+      ),
+    );
+  };
+
+  const onConversationAssigned = (payload: ConversationAssignedPayload) => {
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === payload.conversationId
+          ? { ...conv, assignedToUserId: payload.userId, assignedToUserName: payload.userName }
           : conv,
       ),
     );
@@ -105,7 +121,5 @@ export function useConversations() {
     error,
     reload: loadConversations,
     search,
-    getUnassigned,
-    assignAttendant,
   };
 }

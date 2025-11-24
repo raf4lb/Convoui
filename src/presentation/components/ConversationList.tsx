@@ -6,13 +6,13 @@ import { Badge } from "../../components/ui/badge";
 import { Input } from "../../components/ui/input";
 import { ConversationStatus } from "../../domain/entities/Conversation";
 import { UserRole } from "../../domain/entities/User";
+import { eventBus } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
-import { ConversationsHook } from "../hooks/useConversations";
+import { useConversations } from "../hooks/useConversations";
 
 interface ConversationListProps {
   selectedConversation: string | null;
   onSelectConversation: (id: string) => void;
-  conversationsHook: ConversationsHook;
 }
 
 enum TabType {
@@ -25,11 +25,11 @@ enum TabType {
 export function ConversationList({
   selectedConversation,
   onSelectConversation,
-  conversationsHook,
 }: ConversationListProps) {
   const { session } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<TabType>(TabType.UNASSIGNED);
+  const conversationsHook = useConversations(eventBus);
 
   if (!session) return null;
 

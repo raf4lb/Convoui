@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { Check, Headset, MoreVertical, Paperclip, Send, Smile, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
@@ -13,61 +11,33 @@ import {
 } from "../../components/ui/command";
 import { Input } from "../../components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
-import { Permission } from "../../domain/entities/Permission";
-import { UserRole } from "../../domain/entities/User";
-import { useAuth } from "../contexts/AuthContext";
-import { useConversationMessages } from "../hooks/useConversationMessages";
-import { ConversationsHook } from "../hooks/useConversations";
-import { useUsers } from "../hooks/useUsers";
+import { eventBus } from "../../infrastructure/di/container";
+import { useChatAreaState } from "../hooks/useChatAreaState";
 
 interface ChatAreaProps {
   conversationId: string | null;
-  conversationsHook: ConversationsHook;
 }
 
-export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
-  const { session, hasPermission } = useAuth();
-  const { messages, loading, isSendingMessage, sendMessage } =
-    useConversationMessages(conversationId);
-  const { users } = useUsers();
-  const [openAssignPopover, setOpenAssignPopover] = useState(false);
-  const [messageText, setMessageText] = useState("");
+export function ChatArea({ conversationId }: ChatAreaProps) {
+  const chatAreaState = useChatAreaState(conversationId, eventBus);
 
-  if (!session) return null;
+  if (!conversationId || !chatAreaState.session) return null;
 
-  const currentConversation = conversationsHook.conversations.find((c) => c.id === conversationId);
-
-  const canAssingConversation = hasPermission(Permission.ASSIGN_CONVERSATION);
-
-  // Filter only attendants
-  const attendants = users.filter((u) => u.role === UserRole.ATTENDANT);
-
-  const handleAssignAttendant = async (userId: string | null, userName: string | null) => {
-    if (conversationId) {
-      await conversationsHook.assignAttendant(conversationId, userId, userName);
-      setOpenAssignPopover(false);
-    }
-  };
-
-  const handleSendMessage = async () => {
-    if (!conversationId) return;
-    await sendMessage(messageText, session.user.name);
-    conversationsHook.setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === conversationId ? { ...conv, lastMessage: messageText } : conv,
-      ),
-    );
-    setMessageText("");
-  };
+  const conversation = chatAreaState.conversation;
+  const attendants = chatAreaState.attendants;
+  const messages = chatAreaState.messages;
 
   const buildAssignButton = () => {
-    if (canAssingConversation) {
+    if (chatAreaState.canAssingConversation) {
       return (
-        <Popover open={openAssignPopover} onOpenChange={setOpenAssignPopover}>
+        <Popover
+          open={chatAreaState.openAssignPopover}
+          onOpenChange={chatAreaState.setOpenAssignPopover}
+        >
           <PopoverTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2">
               <User className="w-4 h-4" />
-              {currentConversation?.assignedToUserName || "Atribuir"}
+              {conversation?.assignedToUserName || "Atribuir"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="p-0" align="end">
@@ -76,12 +46,12 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
               <CommandEmpty>Nenhum atendente encontrado.</CommandEmpty>
               <CommandGroup>
                 <CommandItem
-                  onSelect={() => handleAssignAttendant(null, null)}
+                  onSelect={() => chatAreaState.handleAssignAttendant(null, null)}
                   className="cursor-pointer"
                 >
                   <Check
                     className={`mr-2 h-4 w-4 ${
-                      !currentConversation?.assignedToUserId ? "opacity-100" : "opacity-0"
+                      !conversation?.assignedToUserId ? "opacity-100" : "opacity-0"
                     }`}
                   />
                   Não atribuído
@@ -90,12 +60,14 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
                   <CommandItem
                     key={attendant.id}
                     value={attendant.name}
-                    onSelect={() => handleAssignAttendant(attendant.id, attendant.name)}
+                    onSelect={() =>
+                      chatAreaState.handleAssignAttendant(attendant.id, attendant.name)
+                    }
                     className="cursor-pointer"
                   >
                     <Check
                       className={`mr-2 h-4 w-4 ${
-                        currentConversation?.assignedToUserId === attendant.id
+                        conversation?.assignedToUserId === attendant.id
                           ? "opacity-100"
                           : "opacity-0"
                       }`}
@@ -120,13 +92,13 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
           </PopoverContent>
         </Popover>
       );
-    } else if (!currentConversation?.assignedToUserId && session.user.role === UserRole.ATTENDANT) {
+    } else if (chatAreaState.canAssignConversationToUser) {
       return (
         <Button
           variant="ghost"
           size="sm"
           className="gap-2"
-          onClick={() => handleAssignAttendant(session.user.id, session.user.name)}
+          onClick={() => chatAreaState.assignConversationToUser()}
         >
           <Headset className="w-4 h-4" /> Atender
         </Button>
@@ -145,7 +117,7 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
     );
   }
 
-  if (loading) {
+  if (chatAreaState.loading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-white">
         <p className="text-neutral-500">Carregando mensagens...</p>
@@ -160,12 +132,12 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
         <div className="flex items-center gap-3">
           <Avatar>
             <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
-              {currentConversation?.customerName.charAt(0) || "U"}
+              {conversation?.customerName.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="text-neutral-900">{currentConversation?.customerName || "Usuário"}</h3>
-            <p className="text-xs text-neutral-500">{currentConversation?.customerPhone || ""}</p>
+            <h3 className="text-neutral-900">{conversation?.customerName || "Usuário"}</h3>
+            <p className="text-xs text-neutral-500">{conversation?.customerPhone || ""}</p>
           </div>
         </div>
 
@@ -217,9 +189,9 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
           <Input
             placeholder="Digite sua mensagem..."
             className="flex-1 border-neutral-200"
-            value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
-            disabled={isSendingMessage}
+            value={chatAreaState.messageText}
+            onChange={(e) => chatAreaState.setMessageText(e.target.value)}
+            disabled={chatAreaState.isSendingMessage}
           />
 
           <Button variant="ghost" size="icon" className="flex-shrink-0">
@@ -229,8 +201,8 @@ export function ChatArea({ conversationId, conversationsHook }: ChatAreaProps) {
           <Button
             size="icon"
             className="flex-shrink-0 bg-emerald-500 hover:bg-emerald-600"
-            onClick={handleSendMessage}
-            disabled={isSendingMessage}
+            onClick={chatAreaState.handleSendMessage}
+            disabled={chatAreaState.isSendingMessage}
           >
             <Send className="w-5 h-5" />
           </Button>
