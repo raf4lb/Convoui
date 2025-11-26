@@ -5,10 +5,18 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Switch } from "../../components/ui/switch";
+import { Permission } from "../../domain/entities/Permission";
 import { useSettingsState } from "../hooks/useSettings";
+
+import { Dashboard } from "./Dashboard";
+
 
 export function Settings() {
   const settingsState = useSettingsState();
+
+  if (!settingsState.hasPermission(Permission.VIEW_SETTINGS)) {
+    return <Dashboard/>;
+  }
 
   return (
     <div className="flex-1 flex flex-col bg-white">

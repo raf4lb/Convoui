@@ -89,20 +89,20 @@ export function ConversationList({
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex gap-2 overflow-x-auto">
+        <div className="flex gap-1 overflow-x-auto">
           <button
             onClick={() => handleTabChange(TabType.UNASSIGNED)}
-            className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
-              activeTab === "unassigned"
-                ? "bg-amber-50 text-amber-600"
-                : "text-neutral-600 hover:bg-neutral-50"
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
+              activeTab === TabType.UNASSIGNED
+                ? "border-amber-200 text-amber-700 bg-amber-50"
+                : "text-amber-600 hover:bg-neutral-50"
             }`}
           >
             Não atribuídas
           </button>
           <button
             onClick={() => handleTabChange(TabType.PENDING)}
-            className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
               activeTab === TabType.PENDING
                 ? "bg-emerald-50 text-emerald-600"
                 : "text-neutral-600 hover:bg-neutral-50"
@@ -112,7 +112,7 @@ export function ConversationList({
           </button>
           <button
             onClick={() => handleTabChange(TabType.ALL)}
-            className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
               activeTab === TabType.ALL
                 ? "bg-emerald-50 text-emerald-600"
                 : "text-neutral-600 hover:bg-neutral-50"
@@ -122,7 +122,7 @@ export function ConversationList({
           </button>
           <button
             onClick={() => handleTabChange(TabType.RESOLVED)}
-            className={`px-3 py-1.5 rounded-lg text-sm whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
               activeTab === TabType.RESOLVED
                 ? "bg-emerald-50 text-emerald-600"
                 : "text-neutral-600 hover:bg-neutral-50"
@@ -154,7 +154,11 @@ export function ConversationList({
                 <div className="flex items-start gap-3">
                   {/* Avatar */}
                   <div className="w-11 h-11 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shrink-0 text-white">
-                    {conversation.customerName.charAt(0)}
+                    {conversation.customerName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .substring(0, 2)}
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -168,7 +172,10 @@ export function ConversationList({
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm text-neutral-600 truncate mb-2 mt-2">
+                      <p
+                        className="text-sm text-neutral-600 truncate mb-2 mt-2 mr-2"
+                        title={conversation.lastMessage}
+                      >
                         {conversation.lastMessage}
                       </p>
                       {conversation.unread > 0 && (
@@ -183,7 +190,7 @@ export function ConversationList({
                         variant="outline"
                         className="text-xs border-amber-200 text-amber-700 bg-amber-50"
                       >
-                        Não atribuído
+                        Não atribuída
                       </Badge>
                     ) : (
                       (session.company.attendantSeesAllConversations ||

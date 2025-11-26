@@ -5,7 +5,7 @@ import { getCompanyUseCase, updateCompanyUseCase } from "../../infrastructure/di
 import { useAuth } from "../contexts/AuthContext";
 
 export function useSettingsState() {
-  const { session } = useAuth();
+  const { session, hasPermission } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState("");
@@ -55,5 +55,6 @@ export function useSettingsState() {
     formData,
     isLoading,
     isUpdating,
+    hasPermission,
   };
 }

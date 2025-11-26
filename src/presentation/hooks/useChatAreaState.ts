@@ -37,7 +37,7 @@ export function useChatAreaState(conversationId: string | null, eventBus: IEvent
           assignedToUserId: payload.userId,
           assignedToUserName: payload.userName,
         });
-      return 
+      return;
     },
     [conversation, setConversation],
   );
@@ -65,9 +65,6 @@ export function useChatAreaState(conversationId: string | null, eventBus: IEvent
   }, [conversationId, session, eventBus, onConversationAssigned]);
 
   const canAssingConversation = hasPermission(Permission.ASSIGN_CONVERSATION);
-
-  // const attendants = getCompanyAttendants.execute(session?.user.companyId)
-  const attendants = users.filter((u) => u.role === UserRole.ATTENDANT);
 
   const handleAssignAttendant = async (userId: string | null, userName: string | null) => {
     if (conversationId) {
@@ -102,7 +99,7 @@ export function useChatAreaState(conversationId: string | null, eventBus: IEvent
   const canAssignConversationToUser =
     session &&
     conversation &&
-    !conversation.assignedToUserId &&
+    conversation.assignedToUserId !== session.user.id &&
     session.user.role === UserRole.ATTENDANT;
 
   return {
@@ -120,7 +117,6 @@ export function useChatAreaState(conversationId: string | null, eventBus: IEvent
     canAssingConversation,
     conversation,
     handleAssignAttendant,
-    attendants,
     canAssignConversationToUser,
     assignConversationToUser,
     handleSendMessage,

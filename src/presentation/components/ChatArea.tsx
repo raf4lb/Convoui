@@ -1,6 +1,7 @@
 import { Check, Headset, MoreVertical, Paperclip, Send, Smile, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import {
   Command,
@@ -11,6 +12,7 @@ import {
 } from "../../components/ui/command";
 import { Input } from "../../components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
+import { UserRole } from "../../domain/entities/User";
 import { eventBus } from "../../infrastructure/di/container";
 import { useChatAreaState } from "../hooks/useChatAreaState";
 
@@ -22,7 +24,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
   const chatAreaState = useChatAreaState(conversationId, eventBus);
 
   const conversation = chatAreaState.conversation;
-  const attendants = chatAreaState.attendants;
+  const users = chatAreaState.users;
   const messages = chatAreaState.messages;
 
   const buildAssignButton = () => {
@@ -35,7 +37,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
           <PopoverTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2">
               <User className="w-4 h-4" />
-              {conversation?.assignedToUserName || "Atribuir"}
+              {"Atribuir"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="p-0" align="end">
@@ -52,9 +54,9 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                       !conversation?.assignedToUserId ? "opacity-100" : "opacity-0"
                     }`}
                   />
-                  Não atribuído
+                  Não atribuída
                 </CommandItem>
-                {attendants.map((attendant) => (
+                {users.map((attendant) => (
                   <CommandItem
                     key={attendant.id}
                     value={attendant.name}
@@ -79,7 +81,11 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                           .substring(0, 2)}
                       </div>
                       <div>
-                        <p className="text-sm">{attendant.name}</p>
+                        <p className="text-sm">
+                          {attendant.name !== chatAreaState.session?.user.name
+                            ? attendant.name
+                            : attendant.name + " (Eu)"}
+                        </p>
                         <p className="text-xs text-neutral-500">{attendant.email}</p>
                       </div>
                     </div>
@@ -140,6 +146,26 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
         </div>
 
         <div className="flex items-center gap-2">
+          {!conversation?.assignedToUserId ? (
+            <Badge
+              variant="outline"
+              className="text-xs border-amber-200 text-amber-700 bg-amber-50"
+            >
+              Não atribuída
+            </Badge>
+          ) : (
+            (chatAreaState.session?.company.attendantSeesAllConversations ||
+              chatAreaState.session?.user.role !== UserRole.ATTENDANT) && (
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                <span className="flex items-center gap-1">
+                  <Headset className="w-3 h-3" />
+                  {conversation.assignedToUserId != chatAreaState.session?.user.id
+                    ? conversation.assignedToUserName
+                    : "Você"}
+                </span>
+              </Badge>
+            )
+          )}
           {buildAssignButton()}
           <Button variant="ghost" size="icon">
             <MoreVertical className="w-5 h-5" />

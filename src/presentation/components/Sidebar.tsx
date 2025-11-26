@@ -1,4 +1,4 @@
-import { BarChart3, LogOut, MessageSquare, Phone, Settings, User, UsersRound } from "lucide-react";
+import { BarChart3, LogOut, MessageSquare, Settings, User, Users } from "lucide-react";
 
 import { View } from "../../App";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
@@ -38,21 +38,9 @@ export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
     },
     {
       id: View.CUSTOMERS,
-      icon: Phone,
+      icon: Users,
       label: "Clientes",
       permission: Permission.VIEW_CUSTOMERS,
-    },
-    {
-      id: View.USERS,
-      icon: UsersRound,
-      label: "Usuários",
-      permission: Permission.VIEW_USERS,
-    },
-    {
-      id: View.SETTINGS,
-      icon: Settings,
-      label: "Configurações",
-      permission: Permission.VIEW_SETTINGS,
     },
   ].filter((item) => hasPermission(item.permission));
 
@@ -111,7 +99,21 @@ export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => onViewChange(View.PROFILE)}>
             <User className="w-4 h-4 mr-2" />
-            Profile
+            Minha Conta
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          {hasPermission(Permission.VIEW_SETTINGS) && (
+            <div>
+              <DropdownMenuItem onClick={() => onViewChange(View.SETTINGS)}>
+                <Settings className="w-4 h-4 mr-2" />
+                Configurações
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </div>
+          )}
+          <DropdownMenuItem onClick={() => onViewChange(View.USERS)}>
+            <Users className="w-4 h-4 mr-2" />
+            Usuários
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout} className="text-red-600">
