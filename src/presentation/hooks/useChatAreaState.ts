@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Conversation } from "../../domain/entities/Conversation";
 import { Permission } from "../../domain/entities/Permission";
 import { UserRole } from "../../domain/entities/User";
+import {
+  ConversationAssignedEvent,
+  ConversationAssignedPayload,
+} from "../../domain/events/ConversationAssignedEvent";
+import { EventType } from "../../domain/events/DomainEvent";
 import { IEventBus } from "../../domain/ports/EventBus";
 import {
   assignConversationToAttendantUseCase,
@@ -24,6 +29,19 @@ export function useChatAreaState(conversationId: string | null, eventBus: IEvent
   const [openAssignPopover, setOpenAssignPopover] = useState(false);
   const [messageText, setMessageText] = useState("");
 
+  const onConversationAssigned = useCallback(
+    (payload: ConversationAssignedPayload) => {
+      if (conversation)
+        setConversation({
+          ...conversation,
+          assignedToUserId: payload.userId,
+          assignedToUserName: payload.userName,
+        });
+      return 
+    },
+    [conversation, setConversation],
+  );
+
   useEffect(() => {
     const loadConversation = async () => {
       const conversation =
@@ -33,7 +51,18 @@ export function useChatAreaState(conversationId: string | null, eventBus: IEvent
       setConversation(conversation);
     };
     loadConversation();
-  }, [conversationId, session]);
+
+    const unsubscribeConversationAssignedEvent = eventBus.subscribe<ConversationAssignedEvent>(
+      EventType.CONVERSATION_ASSIGNED,
+      async (event) => {
+        onConversationAssigned(event.payload);
+      },
+    );
+
+    return () => {
+      unsubscribeConversationAssignedEvent();
+    };
+  }, [conversationId, session, eventBus, onConversationAssigned]);
 
   const canAssingConversation = hasPermission(Permission.ASSIGN_CONVERSATION);
 
@@ -43,21 +72,27 @@ export function useChatAreaState(conversationId: string | null, eventBus: IEvent
   const handleAssignAttendant = async (userId: string | null, userName: string | null) => {
     if (conversationId) {
       await assignConversationToAttendantUseCase.execute(conversationId, userId, userName);
-      // await conversationsHook.assignAttendant(conversationId, userId, userName);
+      if (conversation)
+        setConversation({
+          ...conversation,
+          assignedToUserId: userId,
+          assignedToUserName: userName,
+        });
       setOpenAssignPopover(false);
     }
   };
 
   const handleSendMessage = async () => {
-    if (!conversationId || !session) return;
+    if (!messageText || !conversationId || !session) return;
+
+    if (conversation?.assignedToUserId !== session.user.id) return;
+
     await sendMessage(messageText, session.user.name);
-    // conversationsHook.setConversations((prev) =>
-    //   prev.map((conv) =>
-    //     conv.id === conversationId ? { ...conv, lastMessage: messageText } : conv,
-    //   ),
-    // );
     setMessageText("");
   };
+
+  const isSendMessageBlocked =
+    isSendingMessage || conversation?.assignedToUserId !== session?.user.id;
 
   const assignConversationToUser = async () => {
     if (!session) return;
@@ -89,5 +124,6 @@ export function useChatAreaState(conversationId: string | null, eventBus: IEvent
     canAssignConversationToUser,
     assignConversationToUser,
     handleSendMessage,
+    isSendMessageBlocked,
   };
 }

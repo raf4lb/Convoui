@@ -11,13 +11,13 @@ export class GetConversations {
 
   async execute(user: AuthUser): Promise<Conversation[]> {
     const company = await this.companyRepository.getById(user.companyId);
-    
+
     if (!company) throw new Error("Company not found");
-    
+
     if (!company.attendantSeesAllConversations && user.role == UserRole.ATTENDANT) {
       return await this.conversationRepository.getByAttendant(user);
     }
-    
+
     return await this.conversationRepository.getAll(user.companyId);
   }
 }

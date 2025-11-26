@@ -184,7 +184,12 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
       {/* Input Area */}
       <div className="border-t border-neutral-200 p-4">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="flex-shrink-0">
+          <Button
+            disabled={chatAreaState.isSendMessageBlocked}
+            variant="ghost"
+            size="icon"
+            className="shrink-0"
+          >
             <Paperclip className="w-5 h-5" />
           </Button>
 
@@ -193,18 +198,23 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
             className="flex-1 border-neutral-200"
             value={chatAreaState.messageText}
             onChange={(e) => chatAreaState.setMessageText(e.target.value)}
-            disabled={chatAreaState.isSendingMessage}
+            disabled={chatAreaState.isSendMessageBlocked}
           />
 
-          <Button variant="ghost" size="icon" className="flex-shrink-0">
+          <Button
+            disabled={chatAreaState.isSendMessageBlocked}
+            variant="ghost"
+            size="icon"
+            className="shrink-0"
+          >
             <Smile className="w-5 h-5" />
           </Button>
 
           <Button
             size="icon"
-            className="flex-shrink-0 bg-emerald-500 hover:bg-emerald-600"
+            className="shrink-0 bg-emerald-500 hover:bg-emerald-600"
             onClick={chatAreaState.handleSendMessage}
-            disabled={chatAreaState.isSendingMessage}
+            disabled={chatAreaState.isSendMessageBlocked}
           >
             <Send className="w-5 h-5" />
           </Button>

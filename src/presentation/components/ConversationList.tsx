@@ -56,7 +56,9 @@ export function ConversationList({
     return true; // 'all'
   });
 
-  filteredConversations = [...filteredConversations].sort((a, b) =>  b.updatedAt.getTime() - a.updatedAt.getTime());
+  filteredConversations = [...filteredConversations].sort(
+    (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+  );
 
   if (conversationsHook.loading) {
     return (
@@ -151,7 +153,7 @@ export function ConversationList({
               >
                 <div className="flex items-start gap-3">
                   {/* Avatar */}
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center flex-shrink-0 text-white">
+                  <div className="w-11 h-11 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shrink-0 text-white">
                     {conversation.customerName.charAt(0)}
                   </div>
 
@@ -161,7 +163,7 @@ export function ConversationList({
                         <h3 className="text-neutral-900 truncate">{conversation.customerName}</h3>
                         <p className="text-xs text-neutral-500">{conversation.customerPhone}</p>
                       </div>
-                      <span className="text-xs text-neutral-500 ml-2 flex-shrink-0">
+                      <span className="text-xs text-neutral-500 ml-2 shrink-0">
                         {conversation.time}
                       </span>
                     </div>

@@ -24,7 +24,7 @@ export class GetConversation {
     ) {
       return null;
     }
-    
+
     return conversation;
   }
 }
