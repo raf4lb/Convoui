@@ -10,6 +10,7 @@ const mockCompanies: Company[] = [
     whatsappApiKey: "mock-api-key-123",
     createdAt: new Date("2024-01-15"),
     isActive: true,
+    attendantSeesAllConversations: true,
   },
   {
     id: "2",
@@ -19,6 +20,7 @@ const mockCompanies: Company[] = [
     whatsappApiKey: "mock-api-key-456",
     createdAt: new Date("2024-02-20"),
     isActive: true,
+    attendantSeesAllConversations: false,
   },
 ];
 

@@ -6,4 +6,5 @@ export interface Company {
   whatsappApiKey?: string;
   createdAt: Date;
   isActive: boolean;
+  attendantSeesAllConversations: boolean;
 }

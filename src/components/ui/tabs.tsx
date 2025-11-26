@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import * as TabsPrimitive from "@radix-ui/react-tabs@1.1.3";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 import { cn } from "./utils";
 
@@ -52,4 +52,4 @@ function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPr
   );
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent };
+export { Tabs, TabsContent, TabsList, TabsTrigger };

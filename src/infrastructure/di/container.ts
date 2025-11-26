@@ -10,6 +10,8 @@ import { UserRepository } from "../../data/repositories/UserRepository";
 import { Login } from "../../domain/use-cases/auth/Login";
 import { Logout } from "../../domain/use-cases/auth/Logout";
 import { ValidateSession } from "../../domain/use-cases/auth/ValidateSession";
+import { GetCompany } from "../../domain/use-cases/company/GetCompany";
+import { UpdateCompany } from "../../domain/use-cases/company/UpdateCompany";
 import { AssignConversationToAttendant } from "../../domain/use-cases/conversation/AssignConversationToAttendant";
 import { GetConversation } from "../../domain/use-cases/conversation/GetConversation";
 import { GetConversationMessages } from "../../domain/use-cases/conversation/GetConversationMessages";
@@ -41,9 +43,19 @@ const authRepository = new AuthRepository(userRepository, companyRepository);
 const customerRepository = new CustomerRepository();
 const attendantStatsRepository = new AttendantStatsRepository();
 
+// Company Use Cases
+export const updateCompanyUseCase = new UpdateCompany(companyRepository);
+export const getCompanyUseCase = new GetCompany(companyRepository);
+
 // Conversation Use Cases
-export const getConversationUseCase = new GetConversation(conversationRepository);
-export const getConversationsUseCase = new GetConversations(conversationRepository);
+export const getConversationUseCase = new GetConversation(
+  conversationRepository,
+  companyRepository,
+);
+export const getConversationsUseCase = new GetConversations(
+  conversationRepository,
+  companyRepository,
+);
 export const getConversationMessagesUseCase = new GetConversationMessages(conversationRepository);
 export const assignConversationToAttendantUseCase = new AssignConversationToAttendant(
   conversationRepository,

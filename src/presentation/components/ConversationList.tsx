@@ -47,7 +47,7 @@ export function ConversationList({
     }
   };
 
-  const filteredConversations = conversationsHook.conversations.filter((conv) => {
+  let filteredConversations = conversationsHook.conversations.filter((conv) => {
     if (searchQuery.trim()) return true; // Already filtered by search
 
     if (activeTab === TabType.UNASSIGNED) return conv.assignedToUserId === null;
@@ -55,6 +55,8 @@ export function ConversationList({
     if (activeTab === TabType.RESOLVED) return conv.status === ConversationStatus.RESOLVED;
     return true; // 'all'
   });
+
+  filteredConversations = [...filteredConversations].sort((a, b) =>  b.updatedAt.getTime() - a.updatedAt.getTime());
 
   if (conversationsHook.loading) {
     return (
@@ -174,26 +176,28 @@ export function ConversationList({
                       )}
                     </div>
 
-                    {session.user.role !== UserRole.ATTENDANT &&
-                      conversation.assignedToUserName && (
-                        <Badge
-                          variant="outline"
-                          className="bg-blue-50 text-blue-700 border-blue-200"
-                        >
-                          <span className="flex items-center gap-1">
-                            <Headset className="w-3 h-3" />
-                            {conversation.assignedToUserName}
-                          </span>
-                        </Badge>
-                      )}
-
-                    {!conversation.assignedToUserId && (
+                    {!conversation.assignedToUserId ? (
                       <Badge
                         variant="outline"
                         className="text-xs border-amber-200 text-amber-700 bg-amber-50"
                       >
                         Não atribuído
                       </Badge>
+                    ) : (
+                      (session.company.attendantSeesAllConversations ||
+                        session.user.role !== UserRole.ATTENDANT) && (
+                        <Badge
+                          variant="outline"
+                          className="bg-blue-50 text-blue-700 border-blue-200"
+                        >
+                          <span className="flex items-center gap-1">
+                            <Headset className="w-3 h-3" />
+                            {conversation.assignedToUserId != session.user.id
+                              ? conversation.assignedToUserName
+                              : "Você"}
+                          </span>
+                        </Badge>
+                      )
                     )}
                   </div>
                 </div>

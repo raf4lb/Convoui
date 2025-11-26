@@ -11,11 +11,10 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   // --- General preferences ---
-  "files.eol": "\n",
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
   "editor.trimAutoWhitespace": true,
   "editor.rulers": [100],
-  "editor.wordWrap": "on"
+  "editor.wordWrap": "off"
 }

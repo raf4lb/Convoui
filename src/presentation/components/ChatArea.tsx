@@ -21,8 +21,6 @@ interface ChatAreaProps {
 export function ChatArea({ conversationId }: ChatAreaProps) {
   const chatAreaState = useChatAreaState(conversationId, eventBus);
 
-  if (!conversationId || !chatAreaState.session) return null;
-
   const conversation = chatAreaState.conversation;
   const attendants = chatAreaState.attendants;
   const messages = chatAreaState.messages;
@@ -73,7 +71,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                       }`}
                     />
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs">
+                      <div className="w-6 h-6 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs">
                         {attendant.name
                           .split(" ")
                           .map((n) => n[0])
@@ -131,7 +129,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
       <div className="h-16 border-b border-neutral-200 px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
+            <AvatarFallback className="bg-linear-to-br from-emerald-400 to-emerald-600 text-white">
               {conversation?.customerName.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
@@ -164,7 +162,11 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
               }`}
             >
               {message.sender === "attendant" && message.attendantName && (
-                <p className="text-xs opacity-80 mb-1">{message.attendantName}</p>
+                <p className="text-xs opacity-80 mb-1">
+                  {message.attendantName !== chatAreaState.session?.user.name
+                    ? message.attendantName
+                    : "Você"}
+                </p>
               )}
               <p className="text-sm">{message.text}</p>
               <p
