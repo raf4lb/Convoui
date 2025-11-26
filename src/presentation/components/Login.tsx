@@ -36,10 +36,10 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-neutral-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-neutral-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4 text-center">
-          <div className="mx-auto w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center">
+          <div className="mx-auto w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center">
             <MessageSquare className="w-10 h-10 text-white" />
           </div>
           <div>
@@ -89,7 +89,7 @@ export function Login() {
 
             <Button
               type="submit"
-              className="w-full bg-emerald-500 hover:bg-emerald-600"
+              className="w-full bg-green-500 hover:bg-green-600"
               disabled={loading}
             >
               {loading ? "Entrando..." : "Entrar"}

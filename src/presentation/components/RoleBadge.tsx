@@ -1,4 +1,4 @@
-import { Shield, UserCog, User } from "lucide-react";
+import { Shield, User, UserCog } from "lucide-react";
 
 import { Badge } from "../../components/ui/badge";
 import { UserRole } from "../../domain/entities/User";
@@ -23,7 +23,7 @@ export function RoleBadge({ role, showIcon = true }: RoleBadgeProps) {
     [UserRole.ATTENDANT]: {
       label: "Atendente",
       icon: User,
-      className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      className: "bg-green-50 text-green-700 border-green-200",
     },
   };
 

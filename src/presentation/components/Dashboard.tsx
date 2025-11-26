@@ -1,18 +1,18 @@
-import { TrendingUp, MessageSquare, Clock, ThumbsUp, Users, Calendar } from "lucide-react";
+import { Calendar, Clock, MessageSquare, ThumbsUp, TrendingUp, Users } from "lucide-react";
 import {
-  LineChart,
-  Line,
-  BarChart,
   Bar,
-  PieChart,
-  Pie,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
 } from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -57,11 +57,11 @@ export function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm text-neutral-600">Total de Conversas</CardTitle>
-              <MessageSquare className="w-4 h-4 text-emerald-500" />
+              <MessageSquare className="w-4 h-4 text-green-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl text-neutral-900 mb-1">{metrics.totalConversations}</div>
-              <p className="text-xs text-emerald-600 flex items-center gap-1">
+              <p className="text-xs text-green-600 flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />+{metrics.trend.conversations}% vs semana anterior
               </p>
             </CardContent>
@@ -74,7 +74,7 @@ export function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl text-neutral-900 mb-1">{metrics.averageResponseTime}</div>
-              <p className="text-xs text-emerald-600 flex items-center gap-1">
+              <p className="text-xs text-green-600 flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 {metrics.trend.responseTime}% mais rápido
               </p>
@@ -88,7 +88,7 @@ export function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl text-neutral-900 mb-1">{metrics.satisfactionRate}/5.0</div>
-              <p className="text-xs text-emerald-600 flex items-center gap-1">
+              <p className="text-xs text-green-600 flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />+{metrics.trend.satisfaction} pontos
               </p>
             </CardContent>
@@ -135,10 +135,10 @@ export function Dashboard() {
                   <Line
                     type="monotone"
                     dataKey="conversas"
-                    stroke="#10b981"
+                    stroke="#00a63e"
                     strokeWidth={2}
                     name="Total"
-                    dot={{ fill: "#10b981", r: 4 }}
+                    dot={{ fill: "#00a63e", r: 4 }}
                   />
                   <Line
                     type="monotone"
@@ -210,7 +210,7 @@ export function Dashboard() {
                       fontSize: "14px",
                     }}
                   />
-                  <Bar dataKey="conversas" fill="#10b981" radius={[8, 8, 0, 0]} name="Conversas" />
+                  <Bar dataKey="conversas" fill="#00a63e" radius={[8, 8, 0, 0]} name="Conversas" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -270,7 +270,7 @@ export function Dashboard() {
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-sm">
+                          <div className="w-8 h-8 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-sm">
                             {attendant.name.charAt(0)}
                           </div>
                           <span className="text-neutral-900">{attendant.name}</span>
@@ -283,7 +283,7 @@ export function Dashboard() {
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-emerald-50 text-emerald-700">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-50 text-green-700">
                           {attendant.resolved}
                         </span>
                       </td>

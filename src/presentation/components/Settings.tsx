@@ -10,16 +10,15 @@ import { useSettingsState } from "../hooks/useSettings";
 
 import { Dashboard } from "./Dashboard";
 
-
 export function Settings() {
   const settingsState = useSettingsState();
 
   if (!settingsState.hasPermission(Permission.VIEW_SETTINGS)) {
-    return <Dashboard/>;
+    return <Dashboard />;
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-white">
+    <div className="flex-1 flex flex-col bg-primary">
       {/* Header */}
       <div className="border-b border-neutral-200 p-6">
         <div className="flex items-center justify-between mb-6">
@@ -139,7 +138,7 @@ export function Settings() {
                           attendantSeesAllConversations: value,
                         })
                       }
-                      className="data-[state=checked]:bg-emerald-500 ml-4"
+                      className="data-[state=checked]:bg-green-500 ml-4"
                       disabled={settingsState.isLoading}
                     />
                   </div>

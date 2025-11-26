@@ -13,6 +13,8 @@ import {
 import { Permission } from "../../domain/entities/Permission";
 import { useAuth } from "../contexts/AuthContext";
 
+import { Login } from "./Login";
+
 interface SidebarProps {
   selectedView: View;
   onViewChange: (view: View) => void;
@@ -21,7 +23,7 @@ interface SidebarProps {
 export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
   const { session, logout, hasPermission } = useAuth();
 
-  if (!session) return null;
+  if (!session) return <Login/>;
 
   const menuItems = [
     {
@@ -47,7 +49,7 @@ export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
   return (
     <div className="w-16 bg-white border-r border-neutral-200 flex flex-col items-center py-6 gap-6">
       {/* Logo */}
-      <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
+      <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
         <MessageSquare className="w-6 h-6 text-white" />
       </div>
 
@@ -63,7 +65,7 @@ export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
               onClick={() => onViewChange(item.id)}
               className={`w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
                 isSelected
-                  ? "bg-emerald-50 text-emerald-600"
+                  ? "bg-green-50 text-green-600"
                   : "text-neutral-400 hover:bg-neutral-50 hover:text-neutral-600"
               }`}
               title={item.label}
@@ -79,7 +81,7 @@ export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
         <DropdownMenuTrigger asChild>
           <button className="mt-auto w-11 h-11 rounded-xl flex items-center justify-center hover:bg-neutral-50 transition-colors">
             <Avatar className="w-10 h-10">
-              <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white text-sm">
+              <AvatarFallback className="bg-gradient-to-br from-green-400 to-green-600 text-white text-sm">
                 {session.user.name
                   .split(" ")
                   .map((n) => n[0])

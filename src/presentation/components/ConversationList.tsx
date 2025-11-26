@@ -94,8 +94,8 @@ export function ConversationList({
             onClick={() => handleTabChange(TabType.UNASSIGNED)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
               activeTab === TabType.UNASSIGNED
-                ? "border-amber-200 text-amber-700 bg-amber-50"
-                : "text-amber-600 hover:bg-neutral-50"
+                ? "border-amber-200 text-amber-600 bg-amber-50"
+                : "text-amber-600 bg-neutral-100 hover:bg-neutral-50"
             }`}
           >
             Não atribuídas
@@ -104,8 +104,8 @@ export function ConversationList({
             onClick={() => handleTabChange(TabType.PENDING)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
               activeTab === TabType.PENDING
-                ? "bg-emerald-50 text-emerald-600"
-                : "text-neutral-600 hover:bg-neutral-50"
+                ? "bg-green-50 text-green-600"
+                : "text-neutral-600 bg-neutral-100 hover:bg-neutral-50"
             }`}
           >
             Pendentes
@@ -114,8 +114,8 @@ export function ConversationList({
             onClick={() => handleTabChange(TabType.ALL)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
               activeTab === TabType.ALL
-                ? "bg-emerald-50 text-emerald-600"
-                : "text-neutral-600 hover:bg-neutral-50"
+                ? "bg-green-50 text-green-600"
+                : "text-neutral-600 bg-neutral-100 hover:bg-neutral-50"
             }`}
           >
             Todas
@@ -124,8 +124,8 @@ export function ConversationList({
             onClick={() => handleTabChange(TabType.RESOLVED)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
               activeTab === TabType.RESOLVED
-                ? "bg-emerald-50 text-emerald-600"
-                : "text-neutral-600 hover:bg-neutral-50"
+                ? "bg-green-50 text-green-600"
+                : "text-neutral-600 bg-neutral-100 hover:bg-neutral-50"
             }`}
           >
             Resolvidas
@@ -148,12 +148,12 @@ export function ConversationList({
                 key={conversation.id}
                 onClick={() => onSelectConversation(conversation.id)}
                 className={`w-full p-4 border-b border-neutral-100 hover:bg-neutral-50 transition-colors text-left ${
-                  isSelected ? "bg-emerald-50" : ""
+                  isSelected ? "bg-green-50" : ""
                 }`}
               >
                 <div className="flex items-start gap-3">
                   {/* Avatar */}
-                  <div className="w-11 h-11 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shrink-0 text-white">
+                  <div className="w-11 h-11 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center shrink-0 text-white">
                     {conversation.customerName
                       .split(" ")
                       .map((n) => n[0])
@@ -179,7 +179,7 @@ export function ConversationList({
                         {conversation.lastMessage}
                       </p>
                       {conversation.unread > 0 && (
-                        <Badge className="bg-emerald-500 text-white text-xs h-5 min-w-5 rounded-full flex items-center justify-center">
+                        <Badge className="bg-green-500 text-white text-xs h-5 min-w-5 rounded-full flex items-center justify-center">
                           {conversation.unread}
                         </Badge>
                       )}
@@ -194,19 +194,27 @@ export function ConversationList({
                       </Badge>
                     ) : (
                       (session.company.attendantSeesAllConversations ||
-                        session.user.role !== UserRole.ATTENDANT) && (
+                        session.user.role !== UserRole.ATTENDANT) &&
+                      (conversation.assignedToUserId != session.user.id ? (
+                        <Badge
+                          variant="outline"
+                          className="bg-green-50 text-green-700 border-green-200"
+                        >
+                          <span className="flex items-center gap-1">
+                            <Headset className="w-3 h-3" />
+                            {conversation.assignedToUserName}
+                          </span>
+                        </Badge>
+                      ) : (
                         <Badge
                           variant="outline"
                           className="bg-blue-50 text-blue-700 border-blue-200"
                         >
                           <span className="flex items-center gap-1">
-                            <Headset className="w-3 h-3" />
-                            {conversation.assignedToUserId != session.user.id
-                              ? conversation.assignedToUserName
-                              : "Você"}
+                            <Headset className="w-3 h-3" /> Você
                           </span>
                         </Badge>
-                      )
+                      ))
                     )}
                   </div>
                 </div>

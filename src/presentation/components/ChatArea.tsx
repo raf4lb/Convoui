@@ -12,7 +12,6 @@ import {
 } from "../../components/ui/command";
 import { Input } from "../../components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
-import { UserRole } from "../../domain/entities/User";
 import { eventBus } from "../../infrastructure/di/container";
 import { useChatAreaState } from "../hooks/useChatAreaState";
 
@@ -73,7 +72,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
                       }`}
                     />
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs">
+                      <div className="w-6 h-6 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-xs">
                         {attendant.name
                           .split(" ")
                           .map((n) => n[0])
@@ -135,7 +134,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
       <div className="h-16 border-b border-neutral-200 px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarFallback className="bg-linear-to-br from-emerald-400 to-emerald-600 text-white">
+            <AvatarFallback className="bg-linear-to-br from-green-400 to-green-600 text-white">
               {conversation?.customerName.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
@@ -153,18 +152,19 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
             >
               Não atribuída
             </Badge>
+          ) : conversation.assignedToUserId != chatAreaState.session?.user.id ? (
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+              <span className="flex items-center gap-1">
+                <Headset className="w-3 h-3" />
+                {conversation.assignedToUserName}
+              </span>
+            </Badge>
           ) : (
-            (chatAreaState.session?.company.attendantSeesAllConversations ||
-              chatAreaState.session?.user.role !== UserRole.ATTENDANT) && (
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                <span className="flex items-center gap-1">
-                  <Headset className="w-3 h-3" />
-                  {conversation.assignedToUserId != chatAreaState.session?.user.id
-                    ? conversation.assignedToUserName
-                    : "Você"}
-                </span>
-              </Badge>
-            )
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+              <span className="flex items-center gap-1">
+                <Headset className="w-3 h-3" /> Você
+              </span>
+            </Badge>
           )}
           {buildAssignButton()}
           <Button variant="ghost" size="icon">
@@ -184,7 +184,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
               className={`max-w-md px-4 py-2.5 rounded-2xl ${
                 message.sender === "customer"
                   ? "bg-neutral-100 text-neutral-900"
-                  : "bg-emerald-500 text-white"
+                  : "bg-green-500 text-white"
               }`}
             >
               {message.sender === "attendant" && message.attendantName && (
@@ -197,7 +197,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
               <p className="text-sm">{message.text}</p>
               <p
                 className={`text-xs mt-1 ${
-                  message.sender === "customer" ? "text-neutral-500" : "text-emerald-100"
+                  message.sender === "customer" ? "text-neutral-500" : "text-green-100"
                 }`}
               >
                 {message.timestamp}
@@ -238,7 +238,7 @@ export function ChatArea({ conversationId }: ChatAreaProps) {
 
           <Button
             size="icon"
-            className="shrink-0 bg-emerald-500 hover:bg-emerald-600"
+            className="shrink-0 bg-green-500 hover:bg-green-600"
             onClick={chatAreaState.handleSendMessage}
             disabled={chatAreaState.isSendMessageBlocked}
           >

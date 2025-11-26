@@ -1,10 +1,10 @@
 import {
-  DashboardMetrics,
-  ConversationByDay,
+  AttendantDetailedPerformance,
   AttendantPerformance,
+  ConversationByDay,
+  DashboardMetrics,
   HourlyData,
   StatusData,
-  AttendantDetailedPerformance,
 } from "../../domain/entities/Metrics";
 import { IMetricsRepository } from "../../domain/repositories/IMetricsRepository";
 
@@ -61,7 +61,7 @@ export class MetricsRepository implements IMetricsRepository {
 
   async getStatusData(): Promise<StatusData[]> {
     return Promise.resolve([
-      { name: "Resolvidas", value: 245, color: "#10b981" },
+      { name: "Resolvidas", value: 245, color: "#00a63e" },
       { name: "Em andamento", value: 18, color: "#3b82f6" },
       { name: "Pendentes", value: 12, color: "#f59e0b" },
     ]);

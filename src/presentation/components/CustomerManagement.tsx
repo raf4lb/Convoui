@@ -99,7 +99,7 @@ export function CustomerManagement() {
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-emerald-500 hover:bg-emerald-600 gap-2">
+              <Button className="bg-green-500 hover:bg-green-600 gap-2">
                 <Plus className="w-4 h-4" />
                 Novo Cliente
               </Button>
@@ -182,7 +182,7 @@ export function CustomerManagement() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-emerald-500 hover:bg-emerald-600"
+                  className="w-full bg-green-500 hover:bg-green-600"
                   disabled={creating}
                 >
                   {creating ? "Cadastrando..." : "Cadastrar Cliente"}
@@ -217,7 +217,7 @@ export function CustomerManagement() {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white">
+                      <div className="w-12 h-12 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center text-white">
                         {customer.name
                           .split(" ")
                           .map((n) => n[0])
