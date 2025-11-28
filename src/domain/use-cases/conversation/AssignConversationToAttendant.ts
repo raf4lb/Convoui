@@ -1,5 +1,5 @@
 import { ConversationAssignedEvent } from "../../events/ConversationAssignedEvent";
-import { IEventBus } from "../../ports/EventBus";
+import { IEventBus } from "../../ports/IEventBus";
 import { IConversationRepository } from "../../repositories/IConversationRepository";
 
 export class AssignConversationToAttendant {

@@ -7,8 +7,8 @@ import {
   ConversationAssignedEvent,
   ConversationAssignedPayload,
 } from "../../domain/events/ConversationAssignedEvent";
-import { EventType } from "../../domain/events/DomainEvent";
-import { IEventBus } from "../../domain/ports/EventBus";
+import { EventType } from "../../domain/events/IDomainEvent";
+import { IEventBus } from "../../domain/ports/IEventBus";
 import {
   assignConversationToAttendantUseCase,
   getConversationUseCase,

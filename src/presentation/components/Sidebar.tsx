@@ -23,7 +23,7 @@ interface SidebarProps {
 export function Sidebar({ selectedView, onViewChange }: SidebarProps) {
   const { session, logout, hasPermission } = useAuth();
 
-  if (!session) return <Login/>;
+  if (!session) return <Login />;
 
   const menuItems = [
     {

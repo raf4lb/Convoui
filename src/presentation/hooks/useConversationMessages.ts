@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { Message } from "../../domain/entities/Message";
-import { EventType } from "../../domain/events/DomainEvent";
-import { MessageSentEvent } from "../../domain/events/MessageCreatedEvent";
-import { IEventBus } from "../../domain/ports/EventBus";
+import { EventType } from "../../domain/events/IDomainEvent";
+import { MessageReceivedEvent } from "../../domain/events/MessageReceivedEvent";
+import { MessageSentEvent } from "../../domain/events/MessageSentEvent";
+import { IEventBus } from "../../domain/ports/IEventBus";
 import {
   getConversationMessagesUseCase,
   sendMessageUseCase,
@@ -38,18 +39,40 @@ export function useConversationMessages(conversationId: string | null, eventBus:
     [conversationId],
   );
 
+  const onMessageReceived = useCallback(
+    (messageConversationId: string, message: Message) => {
+      if (messageConversationId != conversationId) return;
+      setMessages((prev) => [...prev, message]);
+    },
+    [conversationId],
+  );
+
   useEffect(() => {
     if (conversationId) {
       loadMessages();
     }
 
-    const unsubscribe = eventBus.subscribe<MessageSentEvent>(EventType.MESSAGE_SENT, (event) => {
-      if (event.payload.conversationId != conversationId) return;
-      onMessageSent(event.payload.conversationId, event.payload.message);
-    });
+    const unsubscribeMessageSentEvent = eventBus.subscribe<MessageSentEvent>(
+      EventType.MESSAGE_SENT,
+      (event) => {
+        if (event.payload.conversationId != conversationId) return;
+        onMessageSent(event.payload.conversationId, event.payload.message);
+      },
+    );
 
-    return () => unsubscribe();
-  }, [conversationId, loadMessages, eventBus, onMessageSent]);
+    const unsubscribeMessageReceivedEvent = eventBus.subscribe<MessageReceivedEvent>(
+      EventType.MESSAGE_RECEIVED,
+      (event) => {
+        if (event.payload.conversationId != conversationId) return;
+        onMessageReceived(event.payload.conversationId, event.payload.message);
+      },
+    );
+
+    return () => {
+      unsubscribeMessageSentEvent();
+      unsubscribeMessageReceivedEvent();
+    };
+  }, [conversationId, loadMessages, eventBus, onMessageSent, onMessageReceived]);
 
   const sendMessage = async (text: string, attendantName: string) => {
     if (!conversationId) return;
@@ -61,7 +84,6 @@ export function useConversationMessages(conversationId: string | null, eventBus:
         sender: "attendant",
         attendantName: attendantName,
       });
-      // setMessages([...messages, newMessage]);
       setError(null);
     } catch (err) {
       setError(err as Error);

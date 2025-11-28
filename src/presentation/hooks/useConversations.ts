@@ -5,11 +5,16 @@ import {
   ConversationAssignedEvent,
   ConversationAssignedPayload,
 } from "../../domain/events/ConversationAssignedEvent";
-import { EventType } from "../../domain/events/DomainEvent";
-import { MessageSentEvent, MessageSentPayload } from "../../domain/events/MessageCreatedEvent";
-import { IEventBus } from "../../domain/ports/EventBus";
+import { EventType } from "../../domain/events/IDomainEvent";
+import {
+  MessageReceivedEvent,
+  MessageReceivedPayload,
+} from "../../domain/events/MessageReceivedEvent";
+import { MessageSentEvent, MessageSentPayload } from "../../domain/events/MessageSentEvent";
+import { IEventBus } from "../../domain/ports/IEventBus";
 import {
   getConversationsUseCase,
+  getConversationUseCase,
   searchConversationsUseCase,
 } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
@@ -50,6 +55,36 @@ export function useConversations(eventBus: IEventBus) {
     }
   }, [session]);
 
+  const onMessageSent = useCallback(
+    async (payload: MessageSentPayload) => {
+      if (!session) return;
+      const updatedConvo = await getConversationUseCase.execute(
+        payload.conversationId,
+        session.user,
+      );
+      if (!updatedConvo) return;
+      setConversations((prev) =>
+        prev.map((conv) => (conv.id === payload.conversationId ? updatedConvo : conv)),
+      );
+    },
+    [session, setConversations],
+  );
+
+  const onMessageReceived = useCallback(
+    async (payload: MessageReceivedPayload) => {
+      if (!session) return;
+      const updatedConvo = await getConversationUseCase.execute(
+        payload.conversationId,
+        session.user,
+      );
+      if (!updatedConvo) return;
+      setConversations((prev) =>
+        prev.map((conv) => (conv.id === payload.conversationId ? updatedConvo : conv)),
+      );
+    },
+    [session, setConversations],
+  );
+
   useEffect(() => {
     if (session) {
       loadConversations();
@@ -58,6 +93,13 @@ export function useConversations(eventBus: IEventBus) {
         EventType.MESSAGE_SENT,
         async (event) => {
           onMessageSent(event.payload);
+        },
+      );
+
+      const unsubscribeMessageReceivedEvent = eventBus.subscribe<MessageReceivedEvent>(
+        EventType.MESSAGE_RECEIVED,
+        async (event) => {
+          onMessageReceived(event.payload);
         },
       );
 
@@ -70,10 +112,11 @@ export function useConversations(eventBus: IEventBus) {
 
       return () => {
         unsubscribeMessageSentEvent();
+        unsubscribeMessageReceivedEvent();
         unsubscribeConversationAssignedEvent();
       };
     }
-  }, [session, loadConversations, eventBus]);
+  }, [session, loadConversations, eventBus, onMessageReceived, onMessageSent]);
 
   const search = async (query: string) => {
     if (!session) throw new Error("No session");
@@ -88,20 +131,6 @@ export function useConversations(eventBus: IEventBus) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const onMessageSent = (payload: MessageSentPayload) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === payload.conversationId
-          ? {
-              ...conv,
-              lastMessage: payload.message.text,
-              updatedAt: new Date(),
-            }
-          : conv,
-      ),
-    );
   };
 
   const onConversationAssigned = (payload: ConversationAssignedPayload) => {

@@ -1,9 +1,8 @@
 // src/infra/websocket/WebSocketAdapter.ts
-import { Message } from "../../domain/entities/Message";
 
-export type OnMessageHandler = (message: Message) => void;
+import { IWebSocketAdapter, OnMessageHandler } from "../../domain/ports/IWebSocketAdapter";
 
-export class WebSocketAdapter {
+export class WebSocketAdapter implements IWebSocketAdapter {
   private socket?: WebSocket;
   private handlers = new Set<OnMessageHandler>();
 
@@ -25,7 +24,7 @@ export class WebSocketAdapter {
 
     this.socket.onmessage = (ev) => {
       try {
-        const data = JSON.parse(ev.data) as Message;
+        const data = JSON.parse(ev.data);
         if (!data || typeof data.text !== "string") {
           console.warn("[WebSocketAdapter] invalid payload", data);
           return;
@@ -57,11 +56,15 @@ export class WebSocketAdapter {
     this.handlers.clear();
   }
 
+  send(data: string): void {
+    this.socket?.send(data);
+  }
+
   /**
    * Registers a handler that will be called whenever a new message arrives.
    * Returns an unsubscribe function.
    */
-  onMessage(handler: OnMessageHandler): () => void {
+  addHandler(handler: OnMessageHandler): () => void {
     this.handlers.add(handler);
     return () => this.handlers.delete(handler);
   }

@@ -1,12 +1,13 @@
 import { useState } from "react";
 
-import { Headset, Search } from "lucide-react";
+import { Headset, Search, TestTubeDiagonal } from "lucide-react";
 
 import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { ConversationStatus } from "../../domain/entities/Conversation";
 import { UserRole } from "../../domain/entities/User";
-import { eventBus } from "../../infrastructure/di/container";
+import { eventBus, messagesWebSocket } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
 import { useConversations } from "../hooks/useConversations";
 
@@ -72,7 +73,27 @@ export function ConversationList({
     <div className="w-96 bg-white border-r border-neutral-200 flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-neutral-200">
-        <h2 className="mb-4">Conversas</h2>
+        {/* <h2 className="mb-4">Conversas</h2> */}
+        <div className="flex justify-between">
+          <h2 className="mb-4">Conversas</h2>
+          <Button
+            className="flex-col mb-4"
+            onClick={() => {
+              console.log("sending test message");
+              const message = {
+                conversationId: "5",
+                text: "Olá",
+                timestamp: new Date(),
+                sender: "customer",
+                attendantName: "João Silva",
+                id: Math.random().toString(),
+              };
+              messagesWebSocket.send(JSON.stringify(message));
+            }}
+          >
+            <TestTubeDiagonal />
+          </Button>
+        </div>
 
         {/* Search */}
         <div className="relative mb-3">
@@ -94,7 +115,7 @@ export function ConversationList({
             onClick={() => handleTabChange(TabType.UNASSIGNED)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
               activeTab === TabType.UNASSIGNED
-                ? "border-amber-200 text-amber-600 bg-amber-50"
+                ? "border-amber-200 text-amber-700 bg-amber-50"
                 : "text-amber-600 bg-neutral-100 hover:bg-neutral-50"
             }`}
           >

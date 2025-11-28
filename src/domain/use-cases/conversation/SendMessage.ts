@@ -1,6 +1,6 @@
 import { Message } from "../../entities/Message";
-import { MessageSentEvent } from "../../events/MessageCreatedEvent";
-import { IEventBus } from "../../ports/EventBus";
+import { MessageSentEvent } from "../../events/MessageSentEvent";
+import { IEventBus } from "../../ports/IEventBus";
 import { IConversationRepository } from "../../repositories/IConversationRepository";
 
 export class SendMessage {

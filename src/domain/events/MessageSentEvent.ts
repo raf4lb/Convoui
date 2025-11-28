@@ -1,6 +1,6 @@
 import { Message } from "../entities/Message";
 
-import { DomainEvent, EventType } from "./DomainEvent";
+import { EventType, IDomainEvent } from "./IDomainEvent";
 
 export type MessageSentPayload = {
   conversationId: string;
@@ -8,7 +8,7 @@ export type MessageSentPayload = {
   source?: string;
 };
 
-export class MessageSentEvent implements DomainEvent<MessageSentPayload> {
+export class MessageSentEvent implements IDomainEvent<MessageSentPayload> {
   public readonly name = EventType.MESSAGE_SENT;
   public readonly occurredAt: Date;
   constructor(public readonly payload: MessageSentPayload) {

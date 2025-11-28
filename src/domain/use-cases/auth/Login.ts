@@ -1,8 +1,12 @@
 import { AuthSession } from "../../entities/AuthSession";
+import { IWebSocketAdapter } from "../../ports/IWebSocketAdapter";
 import { IAuthRepository } from "../../repositories/IAuthRepository";
 
 export class Login {
-  constructor(private authRepository: IAuthRepository) {}
+  constructor(
+    private readonly authRepository: IAuthRepository,
+    private readonly messagesWebSocket: IWebSocketAdapter,
+  ) {}
 
   async execute(email: string, password: string): Promise<AuthSession> {
     // Validations
@@ -28,6 +32,8 @@ export class Login {
     if (!session.company.isActive) {
       throw new Error("Empresa desativada");
     }
+
+    this.messagesWebSocket.connect();
 
     return session;
   }

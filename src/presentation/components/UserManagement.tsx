@@ -235,9 +235,7 @@ export function UserManagement() {
                     <RoleBadge role={user.role} />
                     <Badge
                       variant={user.isActive ? "default" : "secondary"}
-                      className={
-                        user.isActive ? "bg-green-50 text-green-700 border-green-200" : ""
-                      }
+                      className={user.isActive ? "bg-green-50 text-green-700 border-green-200" : ""}
                     >
                       {user.isActive ? "Ativo" : "Inativo"}
                     </Badge>

@@ -2,7 +2,7 @@ import { AlertCircle } from "lucide-react";
 
 import { Alert, AlertDescription } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";
-import { Card, CardContent, CardHeader } from "../../components/ui/card";
+import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Switch } from "../../components/ui/switch";
 import { Permission } from "../../domain/entities/Permission";
@@ -18,7 +18,7 @@ export function Settings() {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-primary">
+    <div className="flex-1 flex flex-col bg-white">
       {/* Header */}
       <div className="border-b border-neutral-200 p-6">
         <div className="flex items-center justify-between mb-6">
@@ -32,10 +32,7 @@ export function Settings() {
       <div className="overflow-y-auto p-6">
         <div className="grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 xs:grid-cols-1">
           <Card className="bg-white border-b border-neutral-200">
-            <CardHeader>
-              <p>Configurações da Empresa</p>
-            </CardHeader>
-            <CardContent>
+            <CardContent className="mt-6">
               {settingsState.error && (
                 <Alert variant="destructive" className="mb-4 bg-red-50 text-red-700 border-red-200">
                   <AlertCircle />

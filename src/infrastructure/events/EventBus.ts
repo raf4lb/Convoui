@@ -1,5 +1,5 @@
-import { DomainEvent } from "../../domain/events/DomainEvent";
-import { EventHandler, IEventBus } from "../../domain/ports/EventBus";
+import { IDomainEvent } from "../../domain/events/IDomainEvent";
+import { EventHandler, IEventBus } from "../../domain/ports/IEventBus";
 
 /**
  * Implementação simples de EventBus em memória.
@@ -9,7 +9,7 @@ import { EventHandler, IEventBus } from "../../domain/ports/EventBus";
 export class InMemoryEventBus implements IEventBus {
   private handlers = new Map<string, Set<EventHandler<any>>>();
 
-  async publish<T extends DomainEvent>(event: T): Promise<void> {
+  async publish<T extends IDomainEvent>(event: T): Promise<void> {
     const set = this.handlers.get(event.name);
     if (!set || set.size === 0) return;
 
@@ -25,7 +25,7 @@ export class InMemoryEventBus implements IEventBus {
     await Promise.allSettled(promises);
   }
 
-  subscribe<T extends DomainEvent>(eventName: string, handler: EventHandler<T>): () => void {
+  subscribe<T extends IDomainEvent>(eventName: string, handler: EventHandler<T>): () => void {
     const set = this.handlers.get(eventName) ?? new Set<EventHandler<any>>();
     set.add(handler as EventHandler<any>);
     this.handlers.set(eventName, set);

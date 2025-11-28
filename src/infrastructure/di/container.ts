@@ -30,6 +30,13 @@ import { GetUsersByCompany } from "../../domain/use-cases/user/GetUsersByCompany
 import { SearchUsers } from "../../domain/use-cases/user/SearchUsers";
 import { UpdateUser } from "../../domain/use-cases/user/UpdateUser";
 import { InMemoryEventBus } from "../events/EventBus";
+import { WebSocketAdapter } from "../websocket/WebSocketAdapter";
+import { onMessageReceivedHandler } from "../websocket/WebSocketHandlers";
+
+// WebSockets
+const WS_MESSAGES_URL = "wss://echo.websocket.org";
+export const messagesWebSocket = new WebSocketAdapter(WS_MESSAGES_URL);
+messagesWebSocket.addHandler(onMessageReceivedHandler);
 
 // EventBus
 export const eventBus = new InMemoryEventBus();
@@ -69,8 +76,8 @@ export const searchConversationsUseCase = new SearchConversations(conversationRe
 export const getDashboardMetricsUseCase = new GetDashboardMetrics(metricsRepository);
 
 // Auth Use Cases
-export const loginUseCase = new Login(authRepository);
-export const logoutUseCase = new Logout(authRepository);
+export const loginUseCase = new Login(authRepository, messagesWebSocket);
+export const logoutUseCase = new Logout(authRepository, messagesWebSocket);
 export const validateSessionUseCase = new ValidateSession(authRepository);
 
 // User Use Cases
