@@ -26,12 +26,6 @@ export interface ConversationsHook {
   error: Error | null;
   reload: () => Promise<void>;
   search: (query: string) => Promise<void>;
-  getUnassigned: () => Promise<void>;
-  assignAttendant: (
-    conversationId: string,
-    userId: string | null,
-    userName: string | null,
-  ) => Promise<void>;
 }
 
 export function useConversations(eventBus: IEventBus) {
