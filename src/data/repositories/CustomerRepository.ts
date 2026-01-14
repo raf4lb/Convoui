@@ -3,8 +3,8 @@ import { ICustomerRepository } from "../../domain/repositories/ICustomerReposito
 
 const mockCustomers: Customer[] = [
   {
-    id: "1",
-    companyId: "1",
+    id: "e7fc687a-e0fa-49ea-af1b-7a2a2e6fc085",
+    companyId: "474d2fd7-2e99-452b-a4db-fe93ecf8729c",
     name: "Maria Silva",
     phone: "+55 11 98765-4321",
     email: "maria.silva@email.com",
@@ -15,8 +15,8 @@ const mockCustomers: Customer[] = [
     isBlocked: false,
   },
   {
-    id: "2",
-    companyId: "1",
+    id: "e7fc687a-e0fa-49ea-af1b-7a2a2e6fc086",
+    companyId: "474d2fd7-2e99-452b-a4db-fe93ecf8729c",
     name: "Carlos Santos",
     phone: "+55 21 99876-5432",
     email: "carlos.santos@email.com",
@@ -26,8 +26,8 @@ const mockCustomers: Customer[] = [
     isBlocked: false,
   },
   {
-    id: "3",
-    companyId: "1",
+    id: "e7fc687a-e0fa-49ea-af1b-7a2a2e6fc087",
+    companyId: "474d2fd7-2e99-452b-a4db-fe93ecf8729c",
     name: "Fernanda Lima",
     phone: "+55 11 91234-5678",
     tags: ["Interessado"],
@@ -36,8 +36,8 @@ const mockCustomers: Customer[] = [
     isBlocked: false,
   },
   {
-    id: "4",
-    companyId: "1",
+    id: "e7fc687a-e0fa-49ea-af1b-7a2a2e6fc088",
+    companyId: "474d2fd7-2e99-452b-a4db-fe93ecf8729c",
     name: "Pedro Oliveira",
     phone: "+55 11 98888-7777",
     email: "pedro.oliveira@email.com",
@@ -46,8 +46,8 @@ const mockCustomers: Customer[] = [
     isBlocked: false,
   },
   {
-    id: "5",
-    companyId: "1",
+    id: "e7fc687a-e0fa-49ea-af1b-7a2a2e6fc089",
+    companyId: "474d2fd7-2e99-452b-a4db-fe93ecf8729c",
     name: "Julia Costa",
     phone: "+55 21 97777-6666",
     email: "julia.costa@email.com",
@@ -58,8 +58,8 @@ const mockCustomers: Customer[] = [
     isBlocked: false,
   },
   {
-    id: "6",
-    companyId: "2",
+    id: "e7fc687a-e0fa-49ea-af1b-7a2a2e6fc090",
+    companyId: "6dfaada5-37b1-442d-a21b-b63edf12bbd0",
     name: "Roberto Alves",
     phone: "+55 11 95555-4444",
     email: "roberto.alves@email.com",

@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
 
-import { Company } from "../../domain/entities/Company";
 import { getCompanyUseCase, updateCompanyUseCase } from "../../infrastructure/di/container";
 import { useAuth } from "../contexts/AuthContext";
+
+interface CompanyUpdateFormData {
+  name: string;
+  email: string;
+  phone: string;
+  whatsappApiKey: string | null;
+  attendantSeesAllConversations: boolean;
+}
 
 export function useSettingsState() {
   const { session, hasPermission } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState("");
-  const [formData, setFormData] = useState<Partial<Company>>({
+  const [formData, setFormData] = useState<CompanyUpdateFormData>({
     name: "",
     email: "",
     phone: "",
@@ -40,7 +47,15 @@ export function useSettingsState() {
     setIsUpdating(true);
 
     try {
-      await updateCompanyUseCase.execute(session.company.id, { ...formData }, session.user.role);
+      await updateCompanyUseCase.execute(
+        session.company.id,
+        formData.name,
+        formData.email,
+        formData.phone,
+        formData.whatsappApiKey,
+        formData.attendantSeesAllConversations,
+        session.user.role,
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao atualizar empresa");
     } finally {

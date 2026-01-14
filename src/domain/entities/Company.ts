@@ -3,7 +3,7 @@ export interface Company {
   name: string;
   email: string;
   phone: string;
-  whatsappApiKey?: string;
+  whatsappApiKey: string | null;
   createdAt: Date;
   isActive: boolean;
   attendantSeesAllConversations: boolean;

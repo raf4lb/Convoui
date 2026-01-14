@@ -3,7 +3,7 @@ import { ICompanyRepository } from "../../domain/repositories/ICompanyRepository
 
 const mockCompanies: Company[] = [
   {
-    id: "1",
+    id: "474d2fd7-2e99-452b-a4db-fe93ecf8729c",
     name: "Tech Solutions Ltda",
     email: "contato@techsolutions.com",
     phone: "+55 11 98765-4321",
@@ -13,7 +13,7 @@ const mockCompanies: Company[] = [
     attendantSeesAllConversations: true,
   },
   {
-    id: "2",
+    id: "6dfaada5-37b1-442d-a21b-b63edf12bbd0",
     name: "Comércio Digital SA",
     email: "contato@comerciodigital.com",
     phone: "+55 21 99876-5432",
@@ -46,11 +46,19 @@ export class CompanyRepository implements ICompanyRepository {
     return Promise.resolve(company);
   }
 
-  async update(id: string, updates: Partial<Company>): Promise<Company> {
+  async update(
+    id: string,
+    name: string,
+    email: string,
+    phone: string,
+    whatsappApiKey: string | null,
+    attendantSeesAllConversations: boolean,
+  ): Promise<Company> {
     const index = this.companies.findIndex((c) => c.id === id);
     if (index === -1) {
       throw new Error("Company not found");
     }
+    const updates = { id, name, email, phone, whatsappApiKey, attendantSeesAllConversations };
     this.companies[index] = { ...this.companies[index], ...updates };
     return Promise.resolve(this.companies[index]);
   }

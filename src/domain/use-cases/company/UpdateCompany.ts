@@ -7,7 +7,11 @@ export class UpdateCompany {
   constructor(private readonly companyRepository: ICompanyRepository) {}
   async execute(
     companyId: string,
-    updates: Partial<Company>,
+    name: string,
+    email: string,
+    phone: string,
+    whatsappApiKey: string | null,
+    attendantSeesAllConversations: boolean,
     updaterRole: UserRole,
   ): Promise<Company> {
     const companyToUpdate = await this.companyRepository.getById(companyId);
@@ -17,7 +21,14 @@ export class UpdateCompany {
 
     this.validatePermissions(updaterRole);
 
-    const company = await this.companyRepository.update(companyId, updates);
+    const company = await this.companyRepository.update(
+      companyId,
+      name,
+      email,
+      phone,
+      whatsappApiKey,
+      attendantSeesAllConversations,
+    );
     return company;
   }
 

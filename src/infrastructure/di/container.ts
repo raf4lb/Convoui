@@ -1,8 +1,8 @@
 // Dependency Injection Container
 
+import { ApiCompanyRepository } from "../../data/repositories/ApiCompanyRepository";
 import { AttendantStatsRepository } from "../../data/repositories/AttendantStatsRepository";
 import { AuthRepository } from "../../data/repositories/AuthRepository";
-import { CompanyRepository } from "../../data/repositories/CompanyRepository";
 import { ConversationRepository } from "../../data/repositories/ConversationRepository";
 import { CustomerRepository } from "../../data/repositories/CustomerRepository";
 import { MetricsRepository } from "../../data/repositories/MetricsRepository";
@@ -30,6 +30,7 @@ import { GetUsersByCompany } from "../../domain/use-cases/user/GetUsersByCompany
 import { SearchUsers } from "../../domain/use-cases/user/SearchUsers";
 import { UpdateUser } from "../../domain/use-cases/user/UpdateUser";
 import { InMemoryEventBus } from "../events/EventBus";
+import { HttpClient } from "../http/HttpClient";
 import { WebSocketAdapter } from "../websocket/WebSocketAdapter";
 import { onMessageReceivedHandler } from "../websocket/WebSocketHandlers";
 
@@ -44,7 +45,8 @@ export const eventBus = new InMemoryEventBus();
 // Repositories (Singleton instances)
 const conversationRepository = new ConversationRepository();
 const metricsRepository = new MetricsRepository();
-const companyRepository = new CompanyRepository();
+const client = new HttpClient("http://localhost:8000", 30000, 3);
+const companyRepository = new ApiCompanyRepository(client);
 const userRepository = new UserRepository();
 const authRepository = new AuthRepository(userRepository, companyRepository);
 const customerRepository = new CustomerRepository();
