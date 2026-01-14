@@ -68,7 +68,7 @@ export function Chat() {
               onClick={() => {
                 console.log("sending test message");
                 const message = {
-                  conversationId: "5",
+                  conversationId: "948ed322-a961-46fd-b533-363103e94d3a",
                   text: "Olá",
                   timestamp: new Date(),
                   sender: "customer",
