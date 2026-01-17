@@ -261,7 +261,8 @@ export function CustomerManagement() {
 
                   <div className="pt-2 border-t border-neutral-100">
                     <p className="text-xs text-neutral-500">
-                      Último contato: {formatDate(customer.lastContactAt)}
+                      Último contato:{" "}
+                      {customer.lastContactAt ? formatDate(customer.lastContactAt) : "-"}
                     </p>
                   </div>
                 </CardContent>

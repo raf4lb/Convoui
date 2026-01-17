@@ -113,7 +113,10 @@ export class CustomerRepository implements ICustomerRepository {
       name: name,
       email: email,
       phone: phone,
+      tags: [],
+      notes: "",
       companyId: companyId,
+      lastContactAt: null,
       isBlocked: false,
       createdAt: new Date(),
     };

@@ -65,7 +65,7 @@ export function mapToCustomer(dto: CustomerDTO): Customer {
     tags: [],
     notes: "",
     createdAt: new Date(dto.created_at),
-    lastContactAt: new Date(dto.last_contact_at),
+    lastContactAt: dto.last_contact_at ? new Date(dto.last_contact_at) : null,
     isBlocked: dto.is_blocked,
   };
 }
