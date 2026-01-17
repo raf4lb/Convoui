@@ -1,4 +1,5 @@
 import { Company } from "../../domain/entities/Company";
+import { Customer } from "../../domain/entities/Customer";
 
 export interface CompanyDTO {
   id: string;
@@ -38,5 +39,33 @@ export function mapToCompanyDTO(company: Company): CompanyDTO {
     attendant_sees_all_conversations: company.attendantSeesAllConversations,
     created_at: company.createdAt.toISOString(),
     updated_at: null,
+  };
+}
+
+export interface CustomerDTO {
+  id: string;
+  name: string;
+  phone_number: string;
+  email: string | null;
+  company_id: string;
+  is_blocked: boolean;
+  last_contact_at: string;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export function mapToCustomer(dto: CustomerDTO): Customer {
+  // TODO: data validation
+  return {
+    id: dto.id,
+    companyId: dto.name,
+    name: dto.name,
+    phone: dto.phone_number,
+    email: dto.email,
+    tags: [],
+    notes: "",
+    createdAt: new Date(dto.created_at),
+    lastContactAt: new Date(dto.last_contact_at),
+    isBlocked: dto.is_blocked,
   };
 }

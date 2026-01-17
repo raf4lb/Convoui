@@ -21,6 +21,7 @@ const mockCustomers: Customer[] = [
     phone: "+55 21 99876-5432",
     email: "carlos.santos@email.com",
     tags: ["Novo Cliente"],
+    notes: null,
     createdAt: new Date("2024-02-15"),
     lastContactAt: new Date("2024-11-12T09:15:00"),
     isBlocked: false,
@@ -30,7 +31,9 @@ const mockCustomers: Customer[] = [
     companyId: "474d2fd7-2e99-452b-a4db-fe93ecf8729c",
     name: "Fernanda Lima",
     phone: "+55 11 91234-5678",
+    email: null,
     tags: ["Interessado"],
+    notes: null,
     createdAt: new Date("2024-03-20"),
     lastContactAt: new Date("2024-11-11T14:20:00"),
     isBlocked: false,
@@ -41,6 +44,8 @@ const mockCustomers: Customer[] = [
     name: "Pedro Oliveira",
     phone: "+55 11 98888-7777",
     email: "pedro.oliveira@email.com",
+    tags: [],
+    notes: null,
     createdAt: new Date("2024-04-05"),
     lastContactAt: new Date("2024-11-11T16:45:00"),
     isBlocked: false,
@@ -63,6 +68,8 @@ const mockCustomers: Customer[] = [
     name: "Roberto Alves",
     phone: "+55 11 95555-4444",
     email: "roberto.alves@email.com",
+    tags: [],
+    notes: null,
     createdAt: new Date("2024-02-25"),
     lastContactAt: new Date("2024-11-10T10:00:00"),
     isBlocked: false,
@@ -100,10 +107,14 @@ export class CustomerRepository implements ICustomerRepository {
     return Promise.resolve(customers);
   }
 
-  async create(data: Omit<Customer, "id" | "createdAt">): Promise<Customer> {
+  async create(companyId: string, name: string, email: string, phone: string): Promise<Customer> {
     const customer: Customer = {
-      ...data,
       id: Date.now().toString(),
+      name: name,
+      email: email,
+      phone: phone,
+      companyId: companyId,
+      isBlocked: false,
       createdAt: new Date(),
     };
     this.customers.push(customer);

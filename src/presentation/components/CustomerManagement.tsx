@@ -52,13 +52,13 @@ export function CustomerManagement() {
         .map((t) => t.trim())
         .filter((t) => t.length > 0);
 
-      await createCustomer({
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email || undefined,
-        tags: tags.length > 0 ? tags : undefined,
-        notes: formData.notes || undefined,
-      });
+      await createCustomer(
+        formData.name,
+        formData.phone,
+        formData.email || null,
+        tags.length > 0 ? tags : [],
+        formData.notes || null,
+      );
 
       setIsDialogOpen(false);
       setFormData({

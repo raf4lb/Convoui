@@ -8,6 +8,17 @@ export type HttpResponse = {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+type QueryParams = Record<string, string | number | boolean | undefined>;
+
+interface RequestOptions {
+  headers?: HttpHeaders;
+  query?: QueryParams;
+}
+
+interface RequestOptionsWithBody extends RequestOptions {
+  body?: unknown;
+}
+
 export class HttpClient {
   private readonly defaultHeaders: HttpHeaders;
 
@@ -50,25 +61,36 @@ export class HttpClient {
   private async request(
     method: HttpMethod,
     path: string,
-    body?: unknown,
-    headers: HttpHeaders = {},
+    options?: {
+      body?: unknown;
+      headers?: HttpHeaders;
+      query?: Record<string, string | number | boolean | undefined>;
+    },
     attempt = 0,
   ): Promise<HttpResponse> {
-    const url = this.baseUrl + path;
+    const url = new URL(path, this.baseUrl);
+
+    if (options?.query) {
+      Object.entries(options.query).forEach(([key, value]) => {
+        if (value !== undefined) {
+          url.searchParams.append(key, String(value));
+        }
+      });
+    }
 
     try {
-      const response = await this.fetchWithTimeout(url, {
+      const response = await this.fetchWithTimeout(url.toString(), {
         method,
         headers: {
           ...this.defaultHeaders,
-          ...headers,
+          ...options?.headers,
         },
-        body: body ? JSON.stringify(body) : undefined,
+        body: options?.body && method !== "GET" ? JSON.stringify(options.body) : undefined,
       });
 
       const data = await response.json().catch(() => null);
 
-      if (!response.ok) {
+      if (!response.ok && response.status !== 404) {
         throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
       }
 
@@ -81,7 +103,7 @@ export class HttpClient {
       if (attempt < this.maxRetries && this.isRetryableError(error)) {
         const backoffMs = 2 ** attempt * 100;
         await sleep(backoffMs);
-        return this.request(method, path, body, headers, attempt + 1);
+        return this.request(method, path, options, attempt + 1);
       }
 
       throw error instanceof Error ? error : new Error(String(error));
@@ -98,19 +120,33 @@ export class HttpClient {
     return error.name === "AbortError" || error.message.includes("Network");
   }
 
-  get(path: string, headers?: HttpHeaders): Promise<HttpResponse> {
-    return this.request("GET", path, undefined, headers);
+  get(path: string, options?: RequestOptions): Promise<HttpResponse> {
+    return this.request("GET", path, {
+      headers: options?.headers,
+      query: options?.query,
+    });
   }
 
-  post(path: string, body?: unknown, headers?: HttpHeaders): Promise<HttpResponse> {
-    return this.request("POST", path, body, headers);
+  post(path: string, options?: RequestOptionsWithBody): Promise<HttpResponse> {
+    return this.request("POST", path, {
+      body: options?.body,
+      headers: options?.headers,
+      query: options?.query,
+    });
   }
 
-  patch(path: string, body?: unknown, headers?: HttpHeaders): Promise<HttpResponse> {
-    return this.request("PATCH", path, body, headers);
+  patch(path: string, options?: RequestOptionsWithBody): Promise<HttpResponse> {
+    return this.request("PATCH", path, {
+      body: options?.body,
+      headers: options?.headers,
+      query: options?.query,
+    });
   }
 
-  delete(path: string, headers?: HttpHeaders): Promise<HttpResponse> {
-    return this.request("DELETE", path, undefined, headers);
+  delete(path: string, options?: RequestOptions): Promise<HttpResponse> {
+    return this.request("DELETE", path, {
+      headers: options?.headers,
+      query: options?.query,
+    });
   }
 }

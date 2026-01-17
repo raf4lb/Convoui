@@ -49,7 +49,6 @@ export class ApiCompanyRepository implements ICompanyRepository {
       whatsapp_api_key: whatsappApiKey,
       attendant_sees_all_conversations: attendantSeesAllConversations,
     };
-    console.log(payload);
     const res = await this.client.patch(path, payload);
     const body = res.data;
     return mapToCompany(body as CompanyDTO);

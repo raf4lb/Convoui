@@ -49,19 +49,23 @@ export function useCustomers() {
     }
   };
 
-  const createCustomer = async (data: {
-    name: string;
-    phone: string;
-    email?: string;
-    tags?: string[];
-    notes?: string;
-  }) => {
+  const createCustomer = async (
+    name: string,
+    phone: string,
+    email: string | null,
+    tags: string[],
+    notes: string | null,
+  ) => {
     if (!session) throw new Error("No session");
 
-    const newCustomer = await createCustomerUseCase.execute({
-      companyId: session.company.id,
-      ...data,
-    });
+    const newCustomer = await createCustomerUseCase.execute(
+      session.company.id,
+      name,
+      phone,
+      email,
+      tags,
+      notes,
+    );
 
     setCustomers([...customers, newCustomer]);
     return newCustomer;
