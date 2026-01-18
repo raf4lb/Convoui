@@ -65,9 +65,9 @@ const mockCustomers: Customer[] = [
   {
     id: "e7fc687a-e0fa-49ea-af1b-7a2a2e6fc090",
     companyId: "6dfaada5-37b1-442d-a21b-b63edf12bbd0",
-    name: "Roberto Alves",
+    name: "Antônio Alves",
     phone: "+55 11 95555-4444",
-    email: "roberto.alves@email.com",
+    email: "antonio.alves@email.com",
     tags: [],
     notes: null,
     createdAt: new Date("2024-02-25"),

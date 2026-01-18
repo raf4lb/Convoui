@@ -49,6 +49,8 @@ export interface CustomerDTO {
   email: string | null;
   company_id: string;
   is_blocked: boolean;
+  tags: string[];
+  notes: string | null;
   last_contact_at: string;
   created_at: string;
   updated_at: string | null;
@@ -62,8 +64,8 @@ export function mapToCustomer(dto: CustomerDTO): Customer {
     name: dto.name,
     phone: dto.phone_number,
     email: dto.email,
-    tags: [],
-    notes: "",
+    tags: dto.tags,
+    notes: dto.notes,
     createdAt: new Date(dto.created_at),
     lastContactAt: dto.last_contact_at ? new Date(dto.last_contact_at) : null,
     isBlocked: dto.is_blocked,
